@@ -32,22 +32,22 @@ After completing this training, you will be able to:
 
 # How to Run
 
-### Module 1 - Azure Services Deployments 
+### Module 1 - Azure Services Deployments
 - Azure Synapse Analytics Workspace 
 - Azure Databricks
 - Azure Storage Accounts Gen2
 - Azure Log Analytics
-
-### Module 2 - Performance Testing Environment Configuration 
-- TPC–DSTesting Dataset Generation
-- BatchLoadingPipeline Creation•ApacheJMeter Installation
 - Create a pipeline to auto pause/resume the Dedicated SQL Pool
-- Serverless SQL External Tables and Views 
 - Proper service and user permissions for Azure Synapse Analytics Workspace and Azure Data Lake Storage Gen2
 - Parquet Auto Ingestion pipeline to optimize data ingestion using best practices
 
+### Module 2 - Performance Testing Data Generation & Pipeline Creation 
+- TPC–DSTesting Dataset Generation
+- Batch Data Loading Pipeline Creation for SQL Pool & Serevrless SQL
+- Serverless SQL External Tables and Views 
+
 ### Module 3 - Benchmark Testing Task Executions  
-- Pipeline Batch Data Loading Executions-
+- Pipeline Batch Data Loading Executions
 - Apache JMeter Performance & Concurrency Testing Job Executions
 - Azure Synapse Dedicated SQL Pool vs SQL Serverless  
 - Performance Testing Metrics Collections, e.g. Total & Average Execution Time
