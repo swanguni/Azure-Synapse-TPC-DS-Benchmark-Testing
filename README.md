@@ -62,6 +62,4 @@ After completing this training, you will be able to:
 - Proper service and user permissions for Azure Synapse Analytics Workspace and Azure Data Lake Storage Gen2
 - Parquet Auto Ingestion pipeline to optimize data ingestion using best practices
 
-# To Do
-- Example script for configuring Row Level Security
-- Example script for configuring Dynamic Data Masking
+
