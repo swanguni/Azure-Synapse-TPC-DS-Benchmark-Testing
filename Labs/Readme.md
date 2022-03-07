@@ -7,7 +7,7 @@
 ### Execute the following steps as part of the POC
 
 
-- Use the [Azure Services Provision Deck](https://microsoft.sharepoint.com/:p:/t/CSUDataAICommunityIPLibrary/ERyCAkKCH-hGjpgU7OWBss0BdZO02FJSXk79SWCB_35Gfg?e=lCmTU6) to help customer to create Azure resources required for performance testing workloads.
+- Follow the [Azure Services Provision Deck](https://github.com/swanguni/Azure-Synapse-TPC-DS-Benchmark-Testing/tree/main/Labs/Module%201/Readme.md) to create Azure resources required for performance testing workloads.
 
 - Follow the [Benchmark Environment Setup Deck](https://microsoft.sharepoint.com/:p:/t/CSUDataAICommunityIPLibrary/EXkHbOTV6MVAlHppIXZj2EsBguN1LPuQyz40f8GSc2Rm6g?e=SNSaqh) to assist customer generate the proper TPC DS testing dataset and batch data loading pipeline
 
