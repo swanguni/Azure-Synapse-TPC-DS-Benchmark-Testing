@@ -1,8 +1,8 @@
-### "Easy Button" Deployment
+### "Single Click Easy" Deployment
 The following commands should be executed from the Azure Cloud Shell at https://shell.azure.com using bash:
 ```
-@Azure:~$ git clone https://github.com/shaneochotny/Azure-Synapse-Analytics-PoC
-@Azure:~$ cd Azure-Synapse-Analytics-PoC
+@Azure:~$ git clone https://github.com/swanguni/Azure-Synapse-TPC-DS-Benchmark-Testing.git
+@Azure:~$ cd Azure-Synapse-TPC-DS-Benchmark-Testing
 @Azure:~$ bash deploySynapse.sh 
 ```
 
