@@ -2,7 +2,7 @@
 
 # Azure Synapse Analytics PoC Accelerator
 
-![alt tag](https://raw.githubusercontent.com/shaneochotny/Azure-Synapse-Analytics-PoC\/main/Images/Synapse-Analytics-PoC-Architecture.gif)
+![alt tag](https://raw.githubusercontent.com/swanguni/Azure-Synapse-TPC-DS-Benchmark-Testing\/main/Architecture/Azure-Synapse-TPC-DS-Performance-Testing-Reference-Architecture.jpg)
 
 # Description
 
