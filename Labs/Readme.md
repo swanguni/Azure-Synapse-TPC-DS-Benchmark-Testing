@@ -9,8 +9,8 @@
 
 - Follow the steps in [Module 1](https://github.com/swanguni/Azure-Synapse-TPC-DS-Benchmark-Testing/tree/main/Labs/Module%201/Readme.md) to create Azure resources required for performance testing workloads.
 
-- Follow the steps in [Module 2](https://github.com/swanguni/Azure-Synapse-TPC-DS-Benchmark-Testing/tree/main/Labs/Module%201/Readme.md) to assist customer generate the proper TPC DS testing dataset and batch data loading pipeline
+- Follow the steps in [Module 2](https://github.com/swanguni/Azure-Synapse-TPC-DS-Benchmark-Testing/tree/main/Labs/Module%202/Readme.md) to assist customer generate the proper TPC DS testing dataset and batch data loading pipeline
 
-- Guide customer through performance testing tasks, including batch loading, performance testing and concurrency testing using [Module 3](https://github.com/swanguni/Azure-Synapse-TPC-DS-Benchmark-Testing/tree/main/Labs/Module%201/Readme.md).
+- Guide customer through performance testing tasks, including batch loading, performance testing and concurrency testing using [Module 3](https://github.com/swanguni/Azure-Synapse-TPC-DS-Benchmark-Testing/tree/main/Labs/Module%203/Readme.md).
 
 - Work with customer to create performance testing results templates
