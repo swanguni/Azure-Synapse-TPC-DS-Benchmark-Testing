@@ -30,6 +30,10 @@ variable "synapse_azure_ad_admin_upn" {
   description = "UserPrincipcalName (UPN) for the Azure AD administrator of Synapse. This can also be a group, but only one value can be specified. (i.e. shane@microsoft.com)"
 }
 
+variable "adls_storage_account" {
+  description = "Name of Azure Storage Account Gen2."
+}
+
 variable "enable_private_endpoints" {
   description = "If true, create Private Endpoints for Synapse Analytics. This assumes you have other Private Endpoint requirements configured and in place such as virtual networks, VPN/Express Route, and private DNS forwarding."
 }
