@@ -40,11 +40,11 @@ azureUsernameObjectId=$(az ad user show --id $azureUsername --query objectId --o
 sed -i "s/REPLACE_SYNAPSE_AZURE_AD_ADMIN_UPN/${azureUsername}/g" Terraform/terraform.tfvars
 
 
-if echo "$bicepDeploymentCheck" | grep -q "DeploymentNotFound"; then
-    # Check to see if Terraform has already been run
-    if [ -f "Terraform/terraform.tfstate" ]; then
+# Check to see if Terraform has already been run
+
+	if [ -f "Terraform/terraform.tfstate" ]; then
         deploymentType="terraform"
-    else
+ 	else
         # There was no Terraform deployment so we're taking the easy button approach and deploying the Synapse
         # environment on behalf of the user via Terraform.
 
@@ -76,7 +76,6 @@ if echo "$bicepDeploymentCheck" | grep -q "DeploymentNotFound"; then
             exit 1;
         fi
     fi
-fi
 
 echo "Deployment complete!" | tee -a deploySynapse.log
 touch deploySynapse.complete
