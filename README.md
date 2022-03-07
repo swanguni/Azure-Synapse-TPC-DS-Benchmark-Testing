@@ -32,6 +32,12 @@ After completing this training, you will be able to:
 
 # How to Run
 
+### Module 1 - Azure Services Deployments 
+- Azure Synapse Analytics
+- Azure Databricks
+- Azure Storage Accounts
+- Azure Virtual Machine
+
 ### "Easy Button" Deployment
 The following commands should be executed from the Azure Cloud Shell at https://shell.azure.com using bash:
 ```
