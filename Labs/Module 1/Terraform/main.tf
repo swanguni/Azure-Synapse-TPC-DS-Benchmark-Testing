@@ -185,7 +185,7 @@ resource "azurerm_resource_group" "resource_group" {
 //   Azure: https://docs.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction
 //   Terraform: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/storage_account
 resource "azurerm_storage_account" "datalake" {
-  name                     = "var.adls_storage_account"
+  name                     = var.adls_storage_account
   resource_group_name      = var.resource_group_name
   location                 = var.azure_region
   account_tier             = "Standard"
