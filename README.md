@@ -54,12 +54,6 @@ After completing this training, you will be able to:
 - TCO Calculation
 
 
-# What's Configured
-- Enable Result Set Caching
-- Create a pipeline to auto pause/resume the Dedicated SQL Pool
-- Feature flag to enable/disable Private Endpoints
-- Serverless SQL Demo Data Database
-- Proper service and user permissions for Azure Synapse Analytics Workspace and Azure Data Lake Storage Gen2
-- Parquet Auto Ingestion pipeline to optimize data ingestion using best practices
+
 
 
