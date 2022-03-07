@@ -3,7 +3,7 @@ The following commands should be executed from the Azure Cloud Shell at https://
 ```
 @Azure:~$ git clone https://github.com/swanguni/Azure-Synapse-TPC-DS-Benchmark-Testing.git
 @Azure:~$ cd "Azure-Synapse-TPC-DS-Benchmark-Testing/Labs/Module 1"
-@Azure:~$ bash deploySynapse.sh 
+@Azure:~$ bash provisionServices.sh 
 ```
 
 ### Advanced Step by Step Deployment: Terraform
