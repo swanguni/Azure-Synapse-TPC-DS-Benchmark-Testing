@@ -19,6 +19,17 @@ This new IP will help the customer or account team to quickly address the follow
 - Execute an evaluation for developing an objective assessment on key criteria such as performance and TCO. 
 - Run proof-of-concepts to understand the platform capabilities - focusing on price-performance criteria and augmenting POC results with demos to the customer.
 
+## Objectives
+
+After completing this training, you will be able to:
+
+- Demonstrate competitive price and performance of the Azure Synapse Analytics data platform. 
+- Showcase the best practices for tuning and optimizing cloud data warehouse (e.g., cost-based query planning, automatic pipelined execution, polybase data loading). 
+- Help customers properly frame out use case scenarios and choose data platforms which appeal to their specific requirements. 
+- Highlight the trade-offs of using a data warehouse (e.g., Synapse Dedicated SQL Pool) compared to a data lake house (e.g., Synapse SQL Serverless). For example on one hand, data warehouses are excellent repositories for highly vetted, carefully conformed, modeled data used to drive reporting and/or operational dashboards. Data lake houses, on the other hand, can accommodate more data with a shorter on-boarding process, which is great for exploratory analytics and impromptu visualizations. 
+- Clarify the fact that both data warehouse and data lake house models work well, deliver excellent results, can interface when needed, and work with the same BI tools. Furthermore, both solutions are cost effective, cloud-first, elastic, and agile. 
+
+
 # How to Run
 
 ### "Easy Button" Deployment
