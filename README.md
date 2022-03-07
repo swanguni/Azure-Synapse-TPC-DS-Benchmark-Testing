@@ -14,7 +14,7 @@ As customers mature in their cloud adoption journey, a customer’s Data Platfor
 
 The proposed testing framework and artifacts can help account teams to accelerate and execute benchmark testing POC requests with industry-standard (e.g., TPC-DS) benchmark data to simulate a suite of standard data analytic workloads (e.g., loading, performance queries, concurrency testing), against a proposed Azure data platform (e.g., Azure Synapse), to obtain a representative evaluation metrics. 
 
-This new IP will help the customer or account team to quickly address the following challenges. 
+This repo will help the customer or account team to quickly address the following challenges. 
 - Develop a reference architecture and automate the provisioning of resources required for benchmark testing tasks (e.g., data generation, batch loading, performance optimization, deployment). 
 - Execute an evaluation for developing an objective assessment on key criteria such as performance and TCO. 
 - Run proof-of-concepts to understand the platform capabilities - focusing on price-performance criteria and augmenting POC results with demos to the customer.
@@ -33,10 +33,25 @@ After completing this training, you will be able to:
 # How to Run
 
 ### Module 1 - Azure Services Deployments 
-- Azure Synapse Analytics
+- Azure Synapse Analytics Workspace 
 - Azure Databricks
-- Azure Storage Accounts
-- Azure Virtual Machine
+- Azure Storage Accounts Gen2
+- Azure Log Analytics
+
+### Module 2 - Performance Testing Environment Configuration 
+- TPC–DSTesting Dataset Generation
+- BatchLoadingPipeline Creation•ApacheJMeter Installation
+- Create a pipeline to auto pause/resume the Dedicated SQL Pool
+- Serverless SQL External Tables and Views 
+- Proper service and user permissions for Azure Synapse Analytics Workspace and Azure Data Lake Storage Gen2
+- Parquet Auto Ingestion pipeline to optimize data ingestion using best practices
+
+### Module 3 - Benchmark Testing Task Executions  
+- Pipeline Batch Data Loading Executions-
+- Apache JMeter Performance & Concurrency Testing Job Executions
+- Azure Synapse Dedicated SQL Pool vs SQL Serverless  
+- Performance Testing Metrics Collections, e.g. Total & Average Execution Time
+- TCO Calculation
 
 ### "Easy Button" Deployment
 The following commands should be executed from the Azure Cloud Shell at https://shell.azure.com using bash:
