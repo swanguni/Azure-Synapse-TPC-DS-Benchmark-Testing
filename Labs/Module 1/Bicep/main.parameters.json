@@ -1,0 +1,39 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "azure_region": {
+      "value": "eastus"  
+    },
+    "resource_group_name": {
+      "value": "PoC-Synapse-Analytics"
+    },
+    "synapse_sql_pool_name": {
+      "value": "DataWarehouse" 
+    },
+    "synapse_sql_administrator_login": {
+      "value": "sqladminuser" 
+    },
+    "synapse_sql_administrator_login_password": {
+      "value": "Pass@word123" 
+    },
+    "synapse_azure_ad_admin_object_id": {
+      "value": "REPLACE_SYNAPSE_AZURE_AD_ADMIN_OBJECT_ID"
+    },
+    "enable_private_endpoints": {
+      "value": false
+    },
+    "private_endpoint_virtual_network": {
+      "value": "" 
+    },
+    "private_endpoint_virtual_network_subnet": {
+      "value": ""
+    },
+    "private_endpoint_virtual_network_resource_group": {
+      "value": ""
+    },
+    "private_endpoint_private_dns_zone_resource_group": {
+      "value": ""
+    }
+  }
+}
