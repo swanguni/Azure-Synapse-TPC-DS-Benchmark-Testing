@@ -1,6 +1,6 @@
 
 # Step 1
-### TPC DS Dataset Generation
+### TPC DS Dataset Generation (To Do)
 The following commands should be executed from the Azure Cloud Shell at https://shell.azure.com using bash:
 ```
 @Azure:~$ git clone https://github.com/swanguni/Azure-Synapse-TPC-DS-Benchmark-Testing.git
