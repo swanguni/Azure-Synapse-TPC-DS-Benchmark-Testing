@@ -84,7 +84,7 @@ output "synapse_analytics_workspace_resource_group" {
 }
 
 output "datalake_name" {
-  value = "var.adls_storage_account"
+  value = "tpcdsacctpoc"
 }
 
 output "datalake_key" {
