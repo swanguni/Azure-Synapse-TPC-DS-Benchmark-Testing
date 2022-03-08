@@ -42,8 +42,8 @@ You can manually configure the Terraform parameters and update default settings 
 - Create a pipeline to auto pause/resume the Dedicated SQL Pool
 - Feature flag to enable/disable Private Endpoints
 - Proper service and user permissions for Azure Synapse Analytics Workspace and Azure Data Lake Storage Gen2
-- SQL Pool Parquet Auto Ingestion pipeline to optimize data ingestion using best practices
-
+- SQL Pool TPC DS Parquet Datasets Auto Ingestion pipeline to optimize data ingestion using best practices
+- SQL Pool & SQL Serverless Demo Databses 
 
 # To Do
 - Azure Databricks Workspace & Cluster Provision & Cluster
