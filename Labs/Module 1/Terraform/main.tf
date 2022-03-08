@@ -230,7 +230,7 @@ resource "azurerm_storage_data_lake_gen2_filesystem" "datalake-data" {
 // Azure Data Lake Storage Gen2 Diagnostic Logging
 //   Azure: https://docs.microsoft.com/en-us/azure/storage/blobs/monitor-blob-storage
 //   Terraform: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_diagnostic_setting
-resource "azurerm_monitor_diagnostic_setting" "adlsdiagnostics" {
+resource "azurerm_monitor_diagnostic_setting" "synapse-poc-adls-diagnostics" {
   name                       = "Diagnostics"
   target_resource_id         = "${azurerm_storage_account.datalake.id}/blobServices/default/"
   log_analytics_workspace_id = azurerm_log_analytics_workspace.loganalytics.id
