@@ -175,6 +175,28 @@ resource "azurerm_resource_group" "resource_group" {
 
 /************************************************************************************************************************************************
 
+   Log Analytics Workspace
+
+        Create the Log Analytics Workspace to collect logs and metrics from Azure Synapse Analytics and Azure Data Lake Storage Gen2.
+  
+************************************************************************************************************************************************/
+
+// Create a Log Analytics Workspace
+//   Azure: https://docs.microsoft.com/en-us/azure/azure-monitor/platform/data-platform-logs
+//   Terraform: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/log_analytics_workspace
+resource "azurerm_log_analytics_workspace" "loganalytics" {
+  name                = "poc-synapse-analytics-loganalytics-tpcds"
+  resource_group_name = var.resource_group_name
+  location            = var.azure_region
+  sku                 = "PerGB2018"
+  retention_in_days   = 180
+
+  depends_on = [ azurerm_resource_group.resource_group ]
+}
+
+
+/************************************************************************************************************************************************
+
   Azure Data Lake Storage Gen2
 
         Storage for the Synapse Workspace configuration data along with any test data for on-demand querying and ingestion.
@@ -542,23 +564,3 @@ resource "azurerm_private_endpoint" "synapse-dev" {
   }
 }
 
-/************************************************************************************************************************************************
-
-   Log Analytics Workspace
-
-        Create the Log Analytics Workspace to collect logs and metrics from Azure Synapse Analytics and Azure Data Lake Storage Gen2.
-  
-************************************************************************************************************************************************/
-
-// Create a Log Analytics Workspace
-//   Azure: https://docs.microsoft.com/en-us/azure/azure-monitor/platform/data-platform-logs
-//   Terraform: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/log_analytics_workspace
-resource "azurerm_log_analytics_workspace" "loganalytics" {
-  name                = "poc-synapse-analytics-loganalytics-tpcds"
-  resource_group_name = var.resource_group_name
-  location            = var.azure_region
-  sku                 = "PerGB2018"
-  retention_in_days   = 180
-
-  depends_on = [ azurerm_resource_group.resource_group ]
-}
