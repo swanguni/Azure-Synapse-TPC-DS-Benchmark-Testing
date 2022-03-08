@@ -28,14 +28,14 @@ datalakeName=$(terraform output -state=Terraform/terraform.tfstate -raw datalake
 datalakeKey=$(terraform output -state=Terraform/terraform.tfstate -raw datalake_key 2>&1)
 privateEndpointsEnabled=$(terraform output -state=Terraform/terraform.tfstate -raw private_endpoints_enabled 2>&1)
 
-echo "Deployment Type: terraform" | tee -a deploySynapse.log
-echo "Azure Subscription: ${azureSubscriptionName}" | tee -a deploySynapse.log
-echo "Azure Subscription ID: ${azureSubscriptionID}" | tee -a deploySynapse.log
-echo "Azure AD Username: ${azureUsername}" | tee -a deploySynapse.log
-echo "Synapse Analytics Workspace Resource Group: ${resourceGroup}" | tee -a deploySynapse.log
-echo "Synapse Analytics Workspace: ${synapseAnalyticsWorkspaceName}" | tee -a deploySynapse.log
-echo "Synapse Analytics SQL Admin: ${synapseAnalyticsSQLAdmin}" | tee -a deploySynapse.log
-echo "Data Lake Name: ${datalakeName}" | tee -a deploySynapse.log
+echo "Deployment Type: terraform" 
+echo "Azure Subscription: ${azureSubscriptionName}" 
+echo "Azure Subscription ID: ${azureSubscriptionID}" 
+echo "Azure AD Username: ${azureUsername}" 
+echo "Synapse Analytics Workspace Resource Group: ${resourceGroup}" 
+echo "Synapse Analytics Workspace: ${synapseAnalyticsWorkspaceName}" 
+echo "Synapse Analytics SQL Admin: ${synapseAnalyticsSQLAdmin}" 
+echo "Data Lake Name: ${datalakeName}" 
 
 # If Private Endpoints are enabled, temporarily disable the firewalls so we can copy files and perform additional configuration
 if [ "$privateEndpointsEnabled" == "true" ]; then
