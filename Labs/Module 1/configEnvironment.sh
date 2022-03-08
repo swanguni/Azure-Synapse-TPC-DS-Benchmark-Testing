@@ -102,12 +102,9 @@ echo "Creating the TPCDS Demo Data database using Synapse Serverless SQL..." | t
 # Create a Demo Data database using Synapse Serverless SQL
 sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}-ondemand.sql.azuresynapse.net -d master -I -i artifacts/Create_Serverless_Database.sql
 
-sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:TPCDSDBDemo-ondemand.sql.azuresynapse.net -d master -I -Q "CREATE USER LoadingUser FOR LOGIN LoadingUser; ALTER ROLE db_owner ADD MEMBER LoadingUser;CREATE SCHEMA TPCDS;"
+sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}.sql.azuresynapse.net -d TPCDSDBDemo -I -Q "CREATE USER LoadingUser FOR LOGIN LoadingUser; ALTER ROLE db_owner ADD MEMBER LoadingUser;CREATE SCHEMA TPCDS;"
 
-sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:TPCDSDBExternal-ondemand.sql.azuresynapse.net -d master -I -Q "CREATE USER LoadingUser FOR LOGIN LoadingUser; ALTER ROLE db_owner ADD MEMBER LoadingUser;CREATE SCHEMA TPCDS;"
-
-# Create the Views over the external data
-# sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}-ondemand.sql.azuresynapse.net -d "Demo Data (Serverless)" -I -i artifacts/Demo_Data_Serverless_DDL.sql
+sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}-ondemand.sql.azuresynapse.net -d TPCDSDBExternal -I -Q "CREATE USER LoadingUser FOR LOGIN LoadingUser; ALTER ROLE db_owner ADD MEMBER LoadingUser;CREATE SCHEMA TPCDS;"
 
 # Restore the firewall rules on ADLS an Azure Synapse Analytics. That was needed temporarily to apply these settings.
 if [ "$privateEndpointsEnabled" == "true" ]; then
