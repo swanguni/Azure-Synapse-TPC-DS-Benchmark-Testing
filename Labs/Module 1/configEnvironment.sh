@@ -7,8 +7,14 @@
 #
 #       This script should be executed via the Azure Cloud Shell via:
 #
-#       @Azure:~/Azure-Synapse-TPC-DS-Benchmark-Testing/Labs/Module 1$ bash configSynapse.sh
+#       @Azure:~/Azure-Synapse-TPC-DS-Benchmark-Testing/Labs/Module 1$ bash configEnvironment.sh
 #
+
+# Get environment details
+azureSubscriptionName=$(az account show --query name --output tsv 2>&1)
+azureSubscriptionID=$(az account show --query id --output tsv 2>&1)
+azureUsername=$(az account show --query user.name --output tsv 2>&1)
+azureUsernameObjectId=$(az ad user show --id $azureUsername --query objectId --output tsv 2>&1)
 
 # Get the output variables from the Terraform deployment
 
@@ -43,8 +49,8 @@ fi
 # sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}.sql.azuresynapse.net -d master -I -Q "ALTER DATABASE ${synapseAnalyticsSQLPoolName} SET RESULT_SET_CACHING ON;" >> deploySynapse.log 2>&1
 
 # Enable the Query Store
-#echo "Enabling the Query Store..." | tee -a deploySynapse.log
-#sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}.sql.azuresynapse.net -d ${synapseAnalyticsSQLPoolName} -I -Q "ALTER DATABASE ${synapseAnalyticsSQLPoolName} SET QUERY_STORE = ON;" >> deploySynapse.log 2>&1
+# echo "Enabling the Query Store..." | tee -a deploySynapse.log
+# sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}.sql.azuresynapse.net -d ${synapseAnalyticsSQLPoolName} -I -Q "ALTER DATABASE ${synapseAnalyticsSQLPoolName} SET QUERY_STORE = ON;" >> deploySynapse.log 2>&1
 
 echo "Creating the Auto Pause and Resume pipeline..." | tee -a deploySynapse.log
 
@@ -64,7 +70,6 @@ az synapse trigger create --only-show-errors -o none --workspace-name ${synapseA
 
 echo "Creating the Parquet Auto TPCDS Ingestion Pipeline..." | tee -a deploySynapse.log
 
-
 # Create the Resource Class Logins
 cp artifacts/Create_Resource_Class_Logins.sql.tmpl artifacts/Create_Resource_Class_Logins.sql 2>&1
 sed -i "s/REPLACE_PASSWORD/${synapseAnalyticsSQLAdminPassword}/g" artifacts/Create_Resource_Class_Logins.sql
@@ -79,48 +84,30 @@ sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S 
 # Create the Schemas
 sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}.sql.azuresynapse.net -d ${synapseAnalyticsSQLPoolName} -I -i artifacts/Create_Table_Schemas.sql
 
-
 # Create the LS_Synapse_Managed_Identity Linked Service. This is primarily used for the Auto Ingestion pipeline.
 az synapse linked-service create --only-show-errors -o none --workspace-name ${synapseAnalyticsWorkspaceName} --name LS_Synapse_Managed_Identity --file @artifacts/LS_Synapse_Managed_Identity.json
 
 # Create the DS_Synapse_Managed_Identity Dataset. This is primarily used for the Auto Ingestion pipeline.
 az synapse dataset create --only-show-errors -o none --workspace-name ${synapseAnalyticsWorkspaceName} --name DS_Synapse_Managed_Identity --file @artifacts/DS_Synapse_Managed_Identity.json
 
-
-
-
 # Copy the Parquet Auto Ingestion Pipeline template and update the variables
 cp artifacts/Load_TPC_DS.json.tmpl artifacts/Load_TPC_DS.json 2>&1
 sed -i "s/REPLACE_DATALAKE_NAME/${datalakeName}/g" artifacts/Load_TPC_DS.json
-#sed -i "s/REPLACE_SYNAPSE_ANALYTICS_SQL_POOL_NAME/${synapseAnalyticsSQLPoolName}/g" artifacts/Parquet_Auto_Ingestion.json
 
-# Generate a SAS for the data lake so we can upload some files
-#tomorrowsDate=$(date --date="tomorrow" +%Y-%m-%d)
-#destinationStorageSAS=$(az storage container generate-sas --account-name ${datalakeName} --name data --permissions rwal --expiry ${tomorrowsDate} --only-show-errors --output tsv)
-
-# Update the Parquet Auto Ingestion Metadata file tamplate with the correct storage account and then upload it
-#sed -i "s/REPLACE_DATALAKE_NAME/${datalakeName}/g" artifacts/Parquet_Auto_Ingestion_Metadata.csv
-#azcopy cp 'artifacts/Parquet_Auto_Ingestion_Metadata.csv' 'https://'"${datalakeName}"'.blob.core.windows.net/data?'"${destinationStorageSAS}" >> deploySynapse.log 2>&1
-
-
-# Copy sample data for the Parquet Auto Ingestion pipeline
-# sampleDataStorageSAS="?sv=2020-10-02&st=2021-11-23T05%3A00%3A00Z&se=2022-11-24T05%3A00%3A00Z&sr=c&sp=rl&sig=PMi22pEYzw1dHNrOI9gqrwcbi3AJLq%2BxWoSX9SOTLuw%3D"
-# azcopy cp 'https://synapseanalyticspocdata.blob.core.windows.net/sample/AdventureWorks/'"${sampleDataStorageSAS}" 'https://'"${datalakeName}"'.blob.core.windows.net/data/Sample?'"${destinationStorageSAS}" --recursive >> deploySynapse.log 2>&1
-
-
-
-# Create the Auto_Pause_and_Resume Pipeline in the Synapse Analytics Workspace
+# Create the Parquet Auto Ingestion Pipeline in the Synapse Analytics Workspace
 az synapse pipeline create --only-show-errors -o none --workspace-name ${synapseAnalyticsWorkspaceName} --name "Load TPCDS" --file @artifacts/Load_TPC_DS.json >> deploySynapse.log 2>&1
 
-
-# echo "Creating the Demo Data database using Synapse Serverless SQL..." | tee -a deploySynapse.log
+echo "Creating the TPCDS Demo Data database using Synapse Serverless SQL..." | tee -a deploySynapse.log
 
 # Create a Demo Data database using Synapse Serverless SQL
-# sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}-ondemand.sql.azuresynapse.net -d master -I -Q "CREATE DATABASE [Demo Data (Serverless)];"
+sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}-ondemand.sql.azuresynapse.net -d master -I -i artifacts/Create_Serverless_Database.sql
+
+sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:TPCDSDBDemo-ondemand.sql.azuresynapse.net -d master -I -Q "CREATE USER LoadingUser FOR LOGIN LoadingUser; ALTER ROLE db_owner ADD MEMBER LoadingUser;CREATE SCHEMA TPCDS;"
+
+sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:TPCDSDBExternal-ondemand.sql.azuresynapse.net -d master -I -Q "CREATE USER LoadingUser FOR LOGIN LoadingUser; ALTER ROLE db_owner ADD MEMBER LoadingUser;CREATE SCHEMA TPCDS;"
 
 # Create the Views over the external data
 # sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}-ondemand.sql.azuresynapse.net -d "Demo Data (Serverless)" -I -i artifacts/Demo_Data_Serverless_DDL.sql
-
 
 # Restore the firewall rules on ADLS an Azure Synapse Analytics. That was needed temporarily to apply these settings.
 if [ "$privateEndpointsEnabled" == "true" ]; then
