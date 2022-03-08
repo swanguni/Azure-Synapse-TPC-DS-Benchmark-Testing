@@ -87,10 +87,6 @@ output "datalake_name" {
   value = "tpcdsacctpoc"
 }
 
-output "datalake_key" {
-  value     = azurerm_storage_account.datalake.primary_access_key
-  sensitive = true
-}
 
 output "private_endpoints_enabled" {
   value = var.enable_private_endpoints
@@ -121,14 +117,12 @@ output "client_secret" {
 resource "azuread_application" "sp" {
   display_name               = var.app_spn_name
   identifier_uris            = ["http://${var.app_spn_name}"]
-  available_to_other_tenants = false
-  oauth2_allow_implicit_flow = false
+
 }
 
 resource "azuread_service_principal" "sp" {
   application_id = azuread_application.sp.application_id
 
-  // tags = ["aks", "terraform", var.name]
 }
 
 resource "random_string" "unique" {
