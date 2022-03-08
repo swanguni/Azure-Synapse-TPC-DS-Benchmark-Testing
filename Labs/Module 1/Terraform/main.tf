@@ -76,7 +76,7 @@ output "synapse_sql_administrator_login_password" {
 }
 
 output "synapse_analytics_workspace_name" {
-  value = "pocsynapseanalytics-${random_string.suffix.id}"
+  value = "pocsynapseanalytics-tpcds"
 }
 
 output "synapse_analytics_workspace_resource_group" {
@@ -333,7 +333,7 @@ resource "azurerm_storage_account_network_rules" "firewall" {
 //   Azure: https://docs.microsoft.com/en-us/azure/synapse-analytics/overview-what-is
 //   Terraform: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/synapse_workspace
 resource "azurerm_synapse_workspace" "synapsews" {
-  name                                 = "pocsynapseanalytics-${random_string.suffix.id}"
+  name                                 = "pocsynapseanalytics-tpcds"
   resource_group_name                  = var.resource_group_name
   location                             = var.azure_region
   storage_data_lake_gen2_filesystem_id = azurerm_storage_data_lake_gen2_filesystem.datalake-config.id
@@ -554,7 +554,7 @@ resource "azurerm_private_endpoint" "synapse-dev" {
 //   Azure: https://docs.microsoft.com/en-us/azure/azure-monitor/platform/data-platform-logs
 //   Terraform: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/log_analytics_workspace
 resource "azurerm_log_analytics_workspace" "loganalytics" {
-  name                = "poc-synapse-analytics-loganalytics-${random_string.suffix.id}"
+  name                = "poc-synapse-analytics-loganalytics-tpcds"
   resource_group_name = var.resource_group_name
   location            = var.azure_region
   sku                 = "PerGB2018"
