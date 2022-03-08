@@ -41,7 +41,7 @@ After completing this training, you will be able to:
 - Proper service and user permissions for Azure Synapse Analytics Workspace and Azure Data Lake Storage Gen2
 - Parquet Auto Ingestion pipeline to optimize data ingestion using best practices
 
-### Module 2 - Performance Testing Data Generation & Pipeline Creation 
+### Module 2 - Performance Testing Data Generation & Pipeline Ingestion
 - TPC–DSTesting Dataset Generation
 - Batch Data Loading Pipeline Creation for SQL Pool & Serevrless SQL
 - Serverless SQL External Tables and Views 
