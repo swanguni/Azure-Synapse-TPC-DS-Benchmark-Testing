@@ -1,3 +1,4 @@
+# Step 1
 ### "Single Click Easy" Deployment
 The following commands should be executed from the Azure Cloud Shell at https://shell.azure.com using bash:
 ```
@@ -29,6 +30,13 @@ You can manually configure the Terraform parameters and update default settings 
 ### Azure Log Analytics
 - Logging and telemetry for Azure Synapse Analytics
 - Logging and telemetry for Azure Data Lake Storage Gen2
+
+# Step 2
+```
+@Azure:~$ git clone https://github.com/swanguni/Azure-Synapse-TPC-DS-Benchmark-Testing.git
+@Azure:~$ cd "Azure-Synapse-TPC-DS-Benchmark-Testing/Labs/Module 1"
+@Azure:~$ bash configEnvironment.sh 
+```
 
 # What's Configured
 - Enable Result Set Caching
