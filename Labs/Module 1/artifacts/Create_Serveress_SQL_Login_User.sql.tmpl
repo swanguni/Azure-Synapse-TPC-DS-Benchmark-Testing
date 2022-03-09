@@ -5,4 +5,22 @@ USE [master]
 CREATE LOGIN LoadingUser WITH PASSWORD = 'REPLACE_PASSWORD'
 GO
 
+USE [TPCDSDB]
+CREATE USER LoadingUser FOR LOGIN LoadingUser; 
+GO 
 
+ALTER ROLE db_owner ADD MEMBER LoadingUser;
+GO
+
+CREATE SCHEMA TPCDS;
+GO
+
+USE [TPCDSDBExternal]
+CREATE USER LoadingUser FOR LOGIN LoadingUser; 
+GO 
+
+ALTER ROLE db_owner ADD MEMBER LoadingUser;
+GO
+
+CREATE SCHEMA TPCDS;
+GO
