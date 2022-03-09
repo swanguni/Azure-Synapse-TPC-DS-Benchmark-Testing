@@ -18,4 +18,4 @@ synapse_workspace_name                   = "pocsynapseanalytics-tpcds"          
 enable_private_endpoints                 = false                                  // If true, create Private Endpoints for Synapse Analytics. This assumes you have other Private Endpoint requirements configured and in place such as virtual networks, VPN/Express Route, and private DNS forwarding.
 private_endpoint_virtual_network         = ""                                     // Name of the Virtual Network where you want to create the Private Endpoints. (i.e. vnet-data-platform)
 private_endpoint_virtual_network_subnet  = ""                                     // Name of the Subnet within the Virtual Network where you want to create the Private Endpoints. (i.e. private-endpoint-subnet)
-databricks_workspace_name                = "databricks-tpcdsb"                    // Name of Databricks Workspace
+databricks_workspace_name                = "pocdatabricks-tpcds"                    // Name of Databricks Workspace
