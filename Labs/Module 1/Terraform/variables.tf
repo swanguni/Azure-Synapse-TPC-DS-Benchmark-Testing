@@ -49,3 +49,7 @@ variable "private_endpoint_virtual_network" {
 variable "private_endpoint_virtual_network_subnet" {
   description = "Name of the Subnet within the Virtual Network where you want to create the Private Endpoints."
 }
+
+variable "databricks_workspace_name" {
+  description = "Name of Databricks Workspace."
+}
