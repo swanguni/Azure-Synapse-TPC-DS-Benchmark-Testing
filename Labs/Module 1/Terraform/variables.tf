@@ -14,6 +14,10 @@ variable "resource_group_name" {
   description = "Resource Group for all related Azure services."
 }
 
+variable "synapse_workspace_name" {
+  description = "Name of Synapse Workspace."
+}
+
 variable "synapse_sql_pool_name" {
   description = "Name of the SQL pool to create."
 }

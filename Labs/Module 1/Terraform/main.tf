@@ -331,7 +331,7 @@ resource "azurerm_storage_account_network_rules" "firewall" {
 //   Azure: https://docs.microsoft.com/en-us/azure/synapse-analytics/overview-what-is
 //   Terraform: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/synapse_workspace
 resource "azurerm_synapse_workspace" "synapsews" {
-  name                                 = "pocsynapseanalytics-tpcds"
+  name                                 = var.synapse_workspace_name
   resource_group_name                  = var.resource_group_name
   location                             = var.azure_region
   storage_data_lake_gen2_filesystem_id = azurerm_storage_data_lake_gen2_filesystem.datalake-config.id
