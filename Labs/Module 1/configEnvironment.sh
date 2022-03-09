@@ -97,7 +97,7 @@ sed -i "s/REPLACE_DATALAKE_NAME/${datalakeName}/g" artifacts/Load_TPC_DS.json
 # Create the Parquet Auto Ingestion Pipeline in the Synapse Analytics Workspace
 az synapse pipeline create --only-show-errors -o none --workspace-name ${synapseAnalyticsWorkspaceName} --name "Load TPCDS" --file @artifacts/Load_TPC_DS.json >> deploySynapse.log 2>&1
 
-echo "Creating the TPCDS Demo Data database using Synapse Serverless SQL..." | tee -a deploySynapse.log
+echo "Creating the TPCDSDemo Data database using Synapse Serverless SQL..." | tee -a deploySynapse.log
 
 # Create a Demo Data database using Synapse Serverless SQL
 sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}-ondemand.sql.azuresynapse.net -d master -I -i artifacts/Create_Serverless_Database.sql
@@ -107,10 +107,6 @@ cp artifacts/Create_Serveress_SQL_Login_User.sql.tmpl artifacts/Create_Serveress
 sed -i "s/REPLACE_PASSWORD/${synapseAnalyticsSQLAdminPassword}/g" artifacts/Create_Serveress_SQL_Login_User.sql
 
 sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}-ondemand.sql.azuresynapse.net -d master -I -i artifacts/Create_Serveress_SQL_Login_User.sql
-
-#sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}.sql.azuresynapse.net -d TPCDSDBDemo -I -Q "CREATE SCHEMA TPCDS; CREATE USER LoadingUser FOR LOGIN LoadingUser; ALTER ROLE db_owner ADD MEMBER LoadingUser;"
-
-#sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}-ondemand.sql.azuresynapse.net -d TPCDSDBExternal -I -Q "CREATE SCHEMA TPCDS;CREATE USER LoadingUser FOR LOGIN LoadingUser; ALTER ROLE db_owner ADD MEMBER LoadingUser;"
 
 # Restore the firewall rules on ADLS an Azure Synapse Analytics. That was needed temporarily to apply these settings.
 if [ "$privateEndpointsEnabled" == "true" ]; then
