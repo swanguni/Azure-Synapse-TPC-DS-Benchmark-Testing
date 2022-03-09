@@ -1,22 +1,18 @@
 #! /usr/bin/bash
 
-#set -o errexit
-#set -o nounset
-#set -o pipefail
-
 # Get environment details
 export ARM_SUBSCRIPTION_ID=$(az account show --query id --output tsv 2>&1)
+export AZURE_DATABRICKS_APP_ID="2ff814a6-3304-4ab8-85cb-cd0e6f879c1d"
 
 echo "Creating Service Principal for Databricks "
 
-DATABRICKS_SPN_NAME="PoC-TPCDS-Databricks-App"
-ARM_CLIENT_SECRET=$(az ad sp create-for-rbac --name PoC-TPCDS-Databricks-App --query password -o tsv)
-AZURE_DATABRICKS_APP_ID=$(az ad sp list --display-name PoC-TPCDS-Databricks-App --query [].appId -o tsv)
-ARM_TENANT_ID=$(az ad sp list --display-name myTPCDS1 --query [].appOwnerTenantId -o tsv)
-#export AZURE_DATABRICKS_APP_ID="2ff814a6-3304-4ab8-85cb-cd0e6f879c1d"
+DATABRICKS_SPN_NAME="App-PoC-TPCDS-Databricks"
+# ARM_CLIENT_SECRET=$(az ad sp create-for-rbac --name "$DATABRICKS_SPN_NAME" --scopes /subscriptions/"$ARM_SUBSCRIPTION_ID" --query password -o tsv)
+ARM_CLIENT_SECRET="iwk.rdo1T1o1lJIowbKEI5C25edsG6yqOG"
 
-"ARM_CLIENT_SECRET : $ARM_CLIENT_SECRET"
-"AZURE_DATABRICKS_APP_ID : $AZURE_DATABRICKS_APP_ID"
+ARM_TENANT_ID=$(az ad sp list --display-name "$DATABRICKS_SPN_NAME" --query [].appOwnerTenantId -o tsv)
+ARM_CLIENT_ID=$(az ad sp list --display-name "$DATABRICKS_SPN_NAME" --query [].appId -o tsv)
+ARM_OBJECT_ID=$(az ad sp list --display-name "$DATABRICKS_SPN_NAME" --query [].objectId -o tsv)
 
 MANAGEMENT_RESOURCE_ENDPOINT="https://management.core.windows.net/" 
 RESOURCE_GROUP="PoC-Synapse-Analytics"
@@ -29,9 +25,14 @@ DATABRICKS_NUM_WORKERS=4
 DATABRICKS_SPARK_CONF='{"spark.speculation":"true","spark.databricks.delta.preview.enabled":"true"}'
 DATABRICKS_AUTO_TERMINATE_MINUTES=60
 
+echo "Assign the Contributor Role to SPN"
+az role assignment create --assignee "$ARM_OBJECT_ID" \
+--role "Contributor" \
+--scope "/subscriptions/$ARM_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP"
+
 # Login using service principle
-# echo "Logging in using Azure service priciple"
-#az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
+echo "Logging in using Azure Service Pricipal ..... "
+az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
 
 az account set -s  $ARM_SUBSCRIPTION_ID
 
@@ -50,17 +51,17 @@ echo "Creating Databricks Workspace ........"
 # The extension will automatically install the first time you run an az databricks workspace command
 # Ref: https://docs.microsoft.com/en-us/cli/azure/ext/databricks/databricks?view=azure-cli-latest
 
-if [[ $(az databricks workspace list | jq .[].name | grep -w $DATABRICKS_WORKSPACE) = $DATABRICKS_WORKSPACE ]]; then
-    echo "Databricks workspace does not exists, so creating.."
+if [[ $(az databricks workspace list | jq .[].name | grep -w $DATABRICKS_WORKSPACE) != $DATABRICKS_WORKSPACE ]]; then
     az databricks workspace create \
         --location $LOCATION \
         --name $DATABRICKS_WORKSPACE \
-        --sku premium \
+        --sku standard \
         --resource-group $RESOURCE_GROUP \
         --enable-no-public-ip 
 fi
 
-# Get workspace id in the given resource group e.g. /subscriptions/(subscription_id)/resourceGroups/(rg)/providers/Microsoft.Databricks/workspaces/(databricks_workspace)
+# Get workspace id in the given resource group 
+# e.g. /subscriptions/(subscription_id)/resourceGroups/(rg)/providers/Microsoft.Databricks/workspaces/(databricks_workspace)
 workspaceId=$(az resource show --resource-type Microsoft.Databricks/workspaces -g $RESOURCE_GROUP -n "$DATABRICKS_WORKSPACE" --query id -o tsv)
 echo "Workspce ID: $workspaceId"
 
@@ -70,14 +71,13 @@ echo "Workspce URL: $workspaceUrl"
 
 # token response for the azure databricks app 
 token_response=$(az account get-access-token --resource $AZURE_DATABRICKS_APP_ID)
-echo $token_response
 
 # Extract accessToken value
 token=$(jq .accessToken -r <<< "$token_response")
-echo "Token: $token"
+echo "App Token: $token"
 
 # Get the Azure Management Resource endpoint token
-# https://docs.microsoft.com/en-us/azure/databricks/dev-tools/api/latest/aad/service-prin-aad-token#--get-the-azure-management-resource-endpoint-token
+# https://docs.microsoft.com/en-us/azure/databricks/dev-tools/api/latest/aad/service-prin-aad-token
 az_mgmt_resource_endpoint=$(curl -X GET -H 'Content-Type: application/x-www-form-urlencoded' \
 -d 'grant_type=client_credentials&client_id='$ARM_CLIENT_ID'&resource='$MANAGEMENT_RESOURCE_ENDPOINT'&client_secret='$ARM_CLIENT_SECRET \
 https://login.microsoftonline.com/$ARM_TENANT_ID/oauth2/token)
@@ -86,16 +86,14 @@ https://login.microsoftonline.com/$ARM_TENANT_ID/oauth2/token)
 mgmt_access_token=$(jq .access_token -r <<< "$az_mgmt_resource_endpoint" )
 echo "Management Access Token: $mgmt_access_token"
 
-
 # Create PAT token valid for 5 min (300 sec)
 pat_token_response=$(curl -X POST \
     -H "Authorization: Bearer $token" \
     -H "X-Databricks-Azure-SP-Management-Token: $mgmt_access_token" \
     -H "X-Databricks-Azure-Workspace-Resource-Id: $wsId" \
-    -d '{"lifetime_seconds": 300,"comment": "this is an example token"}' \
+    -d '{"lifetime_seconds": 300,"comment": "PAT token"}' \
     https://$workspaceUrl/api/2.0/token/create
 )
-
 
 # Print PAT token
 pat_token=$(jq .token_value -r <<< "$pat_token_response")
@@ -105,14 +103,14 @@ echo "pat_token: $pat_token"
 curl -X GET \
     -H "Authorization: Bearer $token" \
     -H "X-Databricks-Azure-SP-Management-Token: $mgmt_access_token" \
-    -H "X-Databricks-Azure-Workspace-Resource-Id: $wsId" \
+    -H "X-Databricks-Azure-Workspace-Resource-Id: $workspaceId" \
     https://$workspaceUrl/api/2.0/token/list
 
 # List current clusters (OPTIONAL) and could be used to determine the next command e.g. create,restart,terminate etc
 curl -X GET \
     -H "Authorization: Bearer $token" \
     -H "X-Databricks-Azure-SP-Management-Token: $mgmt_access_token" \
-    -H "X-Databricks-Azure-Workspace-Resource-Id: $wsId" \
+    -H "X-Databricks-Azure-Workspace-Resource-Id: $workspaceId" \
     https://$workspaceUrl/api/2.0/clusters/list
 
 # Create Cluster config from variables 
@@ -137,10 +135,9 @@ echo "Creating cluster ........"
 cluster_id_response=$(curl -X POST \
     -H "Authorization: Bearer $token" \
     -H "X-Databricks-Azure-SP-Management-Token: $mgmt_access_token" \
-    -H "X-Databricks-Azure-Workspace-Resource-Id: $wsId" \
+    -H "X-Databricks-Azure-Workspace-Resource-Id: $workspaceId" \
     -d $JSON_STRING \
     https://$workspaceUrl/api/2.0/clusters/create)
-
 
 clusterId=$(jq .cluster_id -r <<< "$cluster_id_response")
 echo "Cluster id: $clusterId"
