@@ -5,7 +5,7 @@ export ARM_SUBSCRIPTION_ID=$(az account show --query id --output tsv 2>&1)
 export AZURE_DATABRICKS_APP_ID="2ff814a6-3304-4ab8-85cb-cd0e6f879c1d" 
 
 # Key Vault Secret Info
-KEY_VAULT="tpcds-kv"
+KEY_VAULT="pockv-tpcds"
 ARM_SPN_CREDENTIAL="tpcds-spn-secret"
 ARM_SPN_OBJECT="tpcds-spn-object"
 ARM_SPN_CLIENT="tpcds-spn-client"
@@ -155,5 +155,5 @@ cluster_id_response=$(curl -X POST \
     https://$workspaceUrl/api/2.0/clusters/create)
 
 clusterId=$(jq .cluster_id -r <<< "$cluster_id_response")
-az keyvault secret set --name $DATABRICKS_CLUSTER_ID --value $clusterId --vault-name $KEY_VAULT
+#az keyvault secret set --name $DATABRICKS_CLUSTER_ID --value $clusterId --vault-name $KEY_VAULT
 echo "Cluster id: $clusterId"

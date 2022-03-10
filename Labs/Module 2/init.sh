@@ -1,3 +1,4 @@
+
 #! /usr/bin/bash
 
 # Get environment details
@@ -68,4 +69,3 @@ az keyvault set-policy -n $KEY_VAULT --secret-permissions all --application-id $
 
 
 echo "complete initialization ......."
-
