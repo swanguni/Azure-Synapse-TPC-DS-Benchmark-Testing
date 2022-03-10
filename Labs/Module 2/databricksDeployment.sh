@@ -27,8 +27,8 @@ DATABRICKS_CLUSTER_ID="tpcds-db-cluster-id"
 echo "Creating Service Principal ......"
 
 APP_SPN_NAME="App-PoC-TPCDS-Test"
-ARM_CLIENT_SECRET=$(az ad sp create-for-rbac --name "$APP_SPN_NAME" --scopes /subscriptions/"$ARM_SUBSCRIPTION_ID" --query password -o tsv)
-#ARM_CLIENT_SECRET="iwk.rdo1T1o1lJIowbKEI5C25edsG6yqOG"
+#ARM_CLIENT_SECRET=$(az ad sp create-for-rbac --name "$APP_SPN_NAME" --scopes /subscriptions/"$ARM_SUBSCRIPTION_ID" --query password -o tsv)
+ARM_CLIENT_SECRET="xkl7Q~3tTCkaIAPraAdIqJ_LRyWz66LgOtxAA"
 
 ARM_TENANT_ID=$(az ad sp list --display-name "$APP_SPN_NAME" --query [].appOwnerTenantId -o tsv)
 ARM_CLIENT_ID=$(az ad sp list --display-name "$APP_SPN_NAME" --query [].appId -o tsv)
