@@ -5,7 +5,7 @@ export ARM_SUBSCRIPTION_ID=$(az account show --query id --output tsv 2>&1)
 export AZURE_DATABRICKS_APP_ID="2ff814a6-3304-4ab8-85cb-cd0e6f879c1d" 
 
 # Key Vault Secret Info
-KEY_VAULT="tpcds-kv"
+KEY_VAULT="tpcds-poc-kv"
 ARM_SPN_CREDENTIAL="tpcds-spn-secret"
 ARM_SPN_OBJECT="tpcds-spn-object"
 ARM_SPN_CLIENT="tpcds-spn-client"
@@ -16,7 +16,7 @@ MANAGEMENT_RESOURCE_ENDPOINT="https://management.core.windows.net/"
 RESOURCE_GROUP="PoC-Synapse-Analytics"
 LOCATION="eastus"
 DATABRICKS_WORKSPACE="pocdatabricks-tpcds"
-DATABRICKS_CLUSTER_NAME="test-cluster-01"
+DATABRICKS_CLUSTER_NAME="tpc-ds-cluster"
 DATABRICKS_SPARK_VERSION="9.1.x-scala2.12"
 DATABRICKS_NODE_TYPE="Standard_D3_v2"
 DATABRICKS_NUM_WORKERS=4 
@@ -30,22 +30,25 @@ ARM_CLIENT_SECRET=$(az ad sp create-for-rbac --name "$APP_SPN_NAME" --scopes /su
 #ARM_CLIENT_SECRET="iwk.rdo1T1o1lJIowbKEI5C25edsG6yqOG"
 
 ARM_TENANT_ID=$(az ad sp list --display-name "$APP_SPN_NAME" --query [].appOwnerTenantId -o tsv)
-ARM_CLIENT_ID=$(az ad sp list --display-name "$$APP_SPN_NAME" --query [].appId -o tsv)
+ARM_CLIENT_ID=$(az ad sp list --display-name "$APP_SPN_NAME" --query [].appId -o tsv)
 ARM_OBJECT_ID=$(az ad sp list --display-name "$APP_SPN_NAME" --query [].objectId -o tsv)
 
 echo "Creating Key Vault ......"
 
-az keyvault create --name $KEY_VAULT --resource-group $RESOURCE_GROUP --location $LOCATION
+if [[ $(az keyvault list --resource-group $RESOURCE_GROUP | jq .[].name | grep -w $KEY_VAULT) != $KEY_VAULT ]]; then
+    az keyvault create --name $KEY_VAULT --resource-group $RESOURCE_GROUP --location $LOCATION
+fi
 
 echo "ARM_CLIENT_SECRET : $ARM_CLIENT_SECRET"
 
-az keyvault secret set --vault-name $KEY_VAULT --name $ARM_SPN_CREDENTIAL --value $ARM_CLIENT_SECRET
+az keyvault secret set  --name $ARM_SPN_CREDENTIAL --value $ARM_CLIENT_SECRET --vault-name $KEY_VAULT
 
-az keyvault secret set --vault-name $KEY_VAULT --name $ARM_SPN_OBJECT --value $ARM_OBJECT_ID
+az keyvault secret set --name $ARM_SPN_OBJECT --value $ARM_OBJECT_ID --vault-name $KEY_VAULT
 
-az keyvault secret set --vault-name $KEY_VAULT --name $ARM_SPN_CLIENT --value $ARM_CLIENT_ID
+az keyvault secret set --name $ARM_SPN_CLIENT --value $ARM_CLIENT_ID --vault-name $KEY_VAULT
 
-az keyvault secret set --vault-name $KEY_VAULT --name $ARM_SPN_TENANT --value $ARM_TENANT_ID
+az keyvault secret set --name $ARM_SPN_TENANT --value $ARM_TENANT_ID --vault-name $KEY_VAULT
+
 
 echo "ARM_OBJECT_ID : $ARM_OBJECT_ID"
 echo "$(az keyvault secret show --name $ARM_SPN_OBJECT --vault-name $KEY_VAULT --query value -o tsv)"
@@ -69,30 +72,6 @@ echo "Logging in using Azure Service Pricipal ..... "
 az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
 
 az account set -s  $ARM_SUBSCRIPTION_ID
-
-# Create Resource Group if not exists
-if [[ $(az group exists --resource-group $RESOURCE_GROUP) = "false" ]]; then
-    echo "Resource Group does not exists, so creating.."
-    az group create --name $RESOURCE_GROUP --location $LOCATION
-fi
-
-# Enable install of extensions without prompt
-az config set extension.use_dynamic_install=yes_without_prompt
-
-echo "Creating Databricks Workspace, if not existing ........" 
-
-# Create databricks workspace using extenstion
-# The extension will automatically install the first time you run an az databricks workspace command
-# Ref: https://docs.microsoft.com/en-us/cli/azure/ext/databricks/databricks?view=azure-cli-latest
-
-if [[ $(az databricks workspace list | jq .[].name | grep -w $DATABRICKS_WORKSPACE) != $DATABRICKS_WORKSPACE ]]; then
-    az databricks workspace create \
-        --location $LOCATION \
-        --name $DATABRICKS_WORKSPACE \
-        --sku standard \
-        --resource-group $RESOURCE_GROUP \
-        --enable-no-public-ip 
-fi
 
 # Get workspace id in the given resource group 
 # e.g. /subscriptions/(subscription_id)/resourceGroups/(rg)/providers/Microsoft.Databricks/workspaces/(databricks_workspace)
