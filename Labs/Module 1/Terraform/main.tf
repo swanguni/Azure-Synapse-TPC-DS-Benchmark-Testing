@@ -175,16 +175,6 @@ resource "azurerm_resource_group" "resource_group" {
   }
 }
 
-// Create Azure Databricks
-//   Terraform: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/databricks_workspace
-resource "azurerm_databricks_workspace" "Databricks" {
-  name                = var.databricks_workspace_name
-  resource_group_name = var.resource_group_name
-  location            = var.azure_region
-  sku                 = "premium"
-  
-  depends_on = [ azurerm_resource_group.resource_group ]
-}
 
 /************************************************************************************************************************************************
 
@@ -204,6 +194,20 @@ resource "azurerm_log_analytics_workspace" "loganalytics" {
   sku                 = "PerGB2018"
   retention_in_days   = 180
 
+  depends_on = [ azurerm_resource_group.resource_group ]
+}
+
+/************************************************************************************************************************************************
+  Create Azure Databricks
+  Terraform: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/databricks_workspace
+************************************************************************************************************************************************/
+
+resource "azurerm_databricks_workspace" "Databricks" {
+  name                = var.databricks_workspace_name
+  resource_group_name = var.resource_group_name
+  location            = var.azure_region
+  sku                 = "standard"
+  
   depends_on = [ azurerm_resource_group.resource_group ]
 }
 
