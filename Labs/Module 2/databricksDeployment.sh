@@ -22,6 +22,7 @@ DATABRICKS_NODE_TYPE="Standard_D3_v2"
 DATABRICKS_NUM_WORKERS=4 
 DATABRICKS_SPARK_CONF='{"spark.speculation":"true","spark.databricks.delta.preview.enabled":"true"}'
 DATABRICKS_AUTO_TERMINATE_MINUTES=60
+DATABRICKS_CLUSTER_ID="tpcds-db-cluster-id"
 
 echo "Creating Service Principal ......"
 
@@ -189,4 +190,5 @@ cluster_id_response=$(curl -X POST \
     https://$workspaceUrl/api/2.0/clusters/create)
 
 clusterId=$(jq .cluster_id -r <<< "$cluster_id_response")
+az keyvault secret set --name $DATABRICKS_CLUSTER_ID --value $clusterId --vault-name $KEY_VAULT
 echo "Cluster id: $clusterId"
