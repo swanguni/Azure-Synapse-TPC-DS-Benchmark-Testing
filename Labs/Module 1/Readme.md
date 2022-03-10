@@ -45,6 +45,4 @@ You can manually configure the Terraform parameters and update default settings 
 - SQL Pool TPC DS Parquet Datasets Auto Ingestion pipeline to optimize data ingestion using best practices
 - SQL Pool & SQL Serverless Demo Databses 
 
-# To Do
-- Azure Databricks Workspace & Cluster Provision & Cluster
-- SPN
+
