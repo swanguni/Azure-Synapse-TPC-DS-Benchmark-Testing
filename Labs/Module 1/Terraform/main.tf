@@ -32,7 +32,7 @@ terraform {
     }
     azuread = {
       source  = "hashicorp/azuread"
-      version = "~> 2.5.0"
+      version = "~> 2.6.0"
     }
   }
 }
@@ -489,3 +489,63 @@ resource "azurerm_private_endpoint" "synapse-dev" {
   }
 }
 
+// https://stackoverflow.com/questions/63028517/how-to-create-client-secret-for-azure-service-principal-using-terraform
+
+resource "azuread_application" "SPApp" {
+  display_name = var.service_principal_app_display_name
+  owners       = [data.azurerm_client_config.current.object_id]
+}
+
+resource "azuread_service_principal" "SPApp" {
+  application_id                = azuread_application.SPApp.application_id
+  app_role_assignment_required  = true
+  owners                        = [data.azurerm_client_config.current.object_id]
+}
+
+resource "azuread_service_principal_password" "SPApp" {
+  service_principal_id = azuread_service_principal.SPApp.id
+}
+
+resource "azurerm_key_vault" "kv" {
+  name                        = var.keyvault_name
+  location                    = var.azure_region
+  resource_group_name         = var.resource_group_name
+  tenant_id                   = data.azurerm_client_config.current.tenant_id
+  soft_delete_retention_days  = 7
+  purge_protection_enabled    = false
+  sku_name = "standard"
+
+  depends_on = [ azurerm_resource_group.resource_group ]
+
+  access_policy {
+    tenant_id = data.azurerm_client_config.current.tenant_id
+    object_id = data.azurerm_client_config.current.object_id
+
+    secret_permissions = [
+      "Set",
+      "List",
+      "Get",
+      "Delete",
+      "Purge",
+      "Recover"
+    ]
+  }
+}
+
+resource "azurerm_key_vault_secret" "AppId" {
+  name         = "AppID"
+  value        = azuread_service_principal.SPApp.id
+  key_vault_id = azurerm_key_vault.kv.id
+}
+
+resource "azurerm_key_vault_secret" "AppPwd" {
+  name         = "AppPwd"
+  value        = azuread_service_principal_password.SPApp.value
+  key_vault_id = azurerm_key_vault.kv.id
+}
+
+resource "azurerm_role_assignment" "adls-spn-permissions" {
+  scope                = azurerm_storage_account.datalake.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = azuread_service_principal.SPApp.id
+}
