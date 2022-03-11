@@ -14,6 +14,7 @@ ARM_SPN_TENANT="tpcds-spn-tenant"
 # Databricks Configuration
 RESOURCE_GROUP="PoC-Synapse-Analytics"
 LOCATION="eastus"
+STORAGE_ACCT="tpcdsacctpoc"
 
 echo "Creating Service Principal ......"
 
