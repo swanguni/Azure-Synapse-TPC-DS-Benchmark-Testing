@@ -53,3 +53,11 @@ variable "private_endpoint_virtual_network_subnet" {
 variable "databricks_workspace_name" {
   description = "Name of Databricks Workspace."
 }
+
+variable "keyvault_name" {
+  description = "Name of Keyvault."
+}
+
+variable "service_principal_app_display_name" {
+  description = "Name of Service Principal App."
+}
