@@ -58,6 +58,3 @@ variable "keyvault_name" {
   description = "Name of Keyvault."
 }
 
-variable "service_principal_app_display_name" {
-  description = "Name of Service Principal App."
-}
