@@ -54,7 +54,3 @@ variable "databricks_workspace_name" {
   description = "Name of Databricks Workspace."
 }
 
-variable "keyvault_name" {
-  description = "Name of Keyvault."
-}
-
