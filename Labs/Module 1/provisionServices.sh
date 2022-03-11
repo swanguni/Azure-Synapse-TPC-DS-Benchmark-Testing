@@ -81,4 +81,4 @@ else
         fi
 fi
 
-echo "TPC DS Azure services provision complete! 
+echo "TPC DS Azure services provision complete! "
