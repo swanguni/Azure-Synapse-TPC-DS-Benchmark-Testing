@@ -1,22 +1,25 @@
 #!/bin/bash
+###################################################################################################################
+# This is the script for the Post-Deployment Configuration including 
+#	- Pipeline, SQL Pool, Serverless SQL
+#	- Service Principal, Key Vault 
+#     - RBAC roles assignment
 #
-# 	  This is the script for the Post-Deployment Configuration.
+# This script should be executed via the Azure Cloud Shell via:
 #
-#    	  These are post-deployment configurations done at the data plan level which is beyond the scope of what Terraform is 
-#       capable of managing or would normally manage, such as Database settings and pipelines.
+# @Azure:~/Azure-Synapse-TPC-DS-Benchmark-Testing/Labs/Module 1$ bash configEnvironment.sh
 #
-#       This script should be executed via the Azure Cloud Shell via:
-#
-#       @Azure:~/Azure-Synapse-TPC-DS-Benchmark-Testing/Labs/Module 1$ bash configEnvironment.sh
-#
+###################################################################################################################
 
-# Get environment details
 azureSubscriptionName=$(az account show --query name --output tsv 2>&1)
 azureSubscriptionID=$(az account show --query id --output tsv 2>&1)
 azureUsername=$(az account show --query user.name --output tsv 2>&1)
-azureUsernameObjectId=$(az ad user show --id $azureUsername --query objectId --output tsv 2>&1)
 
+###################################################################################################################
+# 	 
 # Get the output variables from the Terraform deployment
+#       
+###################################################################################################################
 
 resourceGroup=$(terraform output -state=Terraform/terraform.tfstate -raw synapse_analytics_workspace_resource_group 2>&1)
 synapseAnalyticsWorkspaceName=$(terraform output -state=Terraform/terraform.tfstate -raw synapse_analytics_workspace_name 2>&1)
@@ -24,11 +27,8 @@ synapseAnalyticsSQLPoolName=$(terraform output -state=Terraform/terraform.tfstat
 synapseAnalyticsSQLAdmin=$(terraform output -state=Terraform/terraform.tfstate -raw synapse_sql_administrator_login 2>&1)
 synapseAnalyticsSQLAdminPassword=$(terraform output -state=Terraform/terraform.tfstate -raw synapse_sql_administrator_login_password 2>&1)
 datalakeName=$(terraform output -state=Terraform/terraform.tfstate -raw datalake_name 2>&1)
-
-datalakeKey=$(terraform output -state=Terraform/terraform.tfstate -raw datalake_key 2>&1)
 privateEndpointsEnabled=$(terraform output -state=Terraform/terraform.tfstate -raw private_endpoints_enabled 2>&1)
 
-echo "Deployment Type: terraform" 
 echo "Azure Subscription: ${azureSubscriptionName}" 
 echo "Azure Subscription ID: ${azureSubscriptionID}" 
 echo "Azure AD Username: ${azureUsername}" 
@@ -37,22 +37,34 @@ echo "Synapse Analytics Workspace: ${synapseAnalyticsWorkspaceName}"
 echo "Synapse Analytics SQL Admin: ${synapseAnalyticsSQLAdmin}" 
 echo "Data Lake Name: ${datalakeName}" 
 
+###################################################################################################################
+# 	 
+# Config Synapse Analytics SQL Pool
+#       
+###################################################################################################################
+
 # If Private Endpoints are enabled, temporarily disable the firewalls so we can copy files and perform additional configuration
 if [ "$privateEndpointsEnabled" == "true" ]; then
-    az storage account update --name ${datalakeName} --resource-group ${resourceGroup} --default-action Allow >> deploySynapse.log 2>&1
-    az synapse workspace firewall-rule create --name AllowAll --resource-group ${resourceGroup} --workspace-name ${synapseAnalyticsWorkspaceName} --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255 >> deploySynapse.log 2>&1
-    az synapse workspace firewall-rule create --name AllowAllWindowsAzureIps --resource-group ${resourceGroup} --workspace-name ${synapseAnalyticsWorkspaceName} --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0 >> deploySynapse.log 2>&1
+    az storage account update --name ${datalakeName} --resource-group ${resourceGroup} --default-action Allow >> configEnvironment.log 2>&1
+    az synapse workspace firewall-rule create --name AllowAll --resource-group ${resourceGroup} --workspace-name ${synapseAnalyticsWorkspaceName} --start-ip-address 0.0.0.0 --end-ip-address 255.255.255.255 >> configEnvironment.log 2>&1
+    az synapse workspace firewall-rule create --name AllowAllWindowsAzureIps --resource-group ${resourceGroup} --workspace-name ${synapseAnalyticsWorkspaceName} --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0 >> configEnvironment.log 2>&1
 fi
 
 # Enable Result Set Cache
-# echo "Enabling Result Set Caching..." | tee -a deploySynapse.log
-# sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}.sql.azuresynapse.net -d master -I -Q "ALTER DATABASE ${synapseAnalyticsSQLPoolName} SET RESULT_SET_CACHING ON;" >> deploySynapse.log 2>&1
+# echo "Enabling Result Set Caching..." | tee -a configEnvironment.log
+# sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}.sql.azuresynapse.net -d master -I -Q "ALTER DATABASE ${synapseAnalyticsSQLPoolName} SET RESULT_SET_CACHING ON;" >> configEnvironment.log 2>&1
 
 # Enable the Query Store
-# echo "Enabling the Query Store..." | tee -a deploySynapse.log
-# sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}.sql.azuresynapse.net -d ${synapseAnalyticsSQLPoolName} -I -Q "ALTER DATABASE ${synapseAnalyticsSQLPoolName} SET QUERY_STORE = ON;" >> deploySynapse.log 2>&1
+# echo "Enabling the Query Store..." | tee -a configEnvironment.log
+# sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}.sql.azuresynapse.net -d ${synapseAnalyticsSQLPoolName} -I -Q "ALTER DATABASE ${synapseAnalyticsSQLPoolName} SET QUERY_STORE = ON;" >> configEnvironment.log 2>&1
 
-echo "Creating the Auto Pause and Resume pipeline..." | tee -a deploySynapse.log
+###################################################################################################################
+# 	 
+# Config Synapse Analytics Pipeline, e.g. Auto Pause and Resume, Auto Loading
+#       
+###################################################################################################################
+
+echo "Creating the Auto Pause and Resume pipeline..." | tee -a configEnvironment.log
 
 # Copy the Auto_Pause_and_Resume Pipeline template and update the variables
 cp artifacts/Auto_Pause_and_Resume.json.tmpl artifacts/Auto_Pause_and_Resume.json 2>&1
@@ -68,7 +80,7 @@ az synapse pipeline create --only-show-errors -o none --workspace-name ${synapse
 az synapse trigger create --only-show-errors -o none --workspace-name ${synapseAnalyticsWorkspaceName} --name Pause --file @artifacts/triggerPause.json
 az synapse trigger create --only-show-errors -o none --workspace-name ${synapseAnalyticsWorkspaceName} --name Resume --file @artifacts/triggerResume.json
 
-echo "Creating the Parquet Auto TPCDS Ingestion Pipeline..." | tee -a deploySynapse.log
+echo "Creating the Parquet Auto TPCDS Ingestion Pipeline..." | tee -a configEnvironment.log
 
 # Create the Resource Class Logins
 cp artifacts/Create_Resource_Class_Logins.sql.tmpl artifacts/Create_Resource_Class_Logins.sql 2>&1
@@ -90,14 +102,20 @@ az synapse linked-service create --only-show-errors -o none --workspace-name ${s
 # Create the DS_Synapse_Managed_Identity Dataset. This is primarily used for the Auto Ingestion pipeline.
 az synapse dataset create --only-show-errors -o none --workspace-name ${synapseAnalyticsWorkspaceName} --name DS_Synapse_Managed_Identity --file @artifacts/DS_Synapse_Managed_Identity.json
 
-# Copy the Parquet Auto Ingestion Pipeline template and update the variables
+# Copy the Auto Ingestion Pipeline template and update the variables
 cp artifacts/Load_TPC_DS.json.tmpl artifacts/Load_TPC_DS.json 2>&1
 sed -i "s/REPLACE_DATALAKE_NAME/${datalakeName}/g" artifacts/Load_TPC_DS.json
 
-# Create the Parquet Auto Ingestion Pipeline in the Synapse Analytics Workspace
-az synapse pipeline create --only-show-errors -o none --workspace-name ${synapseAnalyticsWorkspaceName} --name "Load TPCDS" --file @artifacts/Load_TPC_DS.json >> deploySynapse.log 2>&1
+# Create the Auto Ingestion Pipeline in the Synapse Analytics Workspace
+az synapse pipeline create --only-show-errors -o none --workspace-name ${synapseAnalyticsWorkspaceName} --name "Load TPCDS" --file @artifacts/Load_TPC_DS.json >> configEnvironment.log 2>&1
 
-echo "Creating the TPCDSDemo Data database using Synapse Serverless SQL..." | tee -a deploySynapse.log
+###################################################################################################################
+# 	 
+# Config Synapse SQL Serverless 
+#       
+###################################################################################################################
+
+echo "Creating the TPCDSDemo Data database using Synapse Serverless SQL..." | tee -a configEnvironment.log
 
 # Create a Demo Data database using Synapse Serverless SQL
 sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}-ondemand.sql.azuresynapse.net -d master -I -i artifacts/Create_Serverless_Database.sql
@@ -110,11 +128,58 @@ sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S 
 
 # Restore the firewall rules on ADLS an Azure Synapse Analytics. That was needed temporarily to apply these settings.
 if [ "$privateEndpointsEnabled" == "true" ]; then
-    echo "Restoring firewall rules..." | tee -a deploySynapse.log
-    az storage account update --name ${datalakeName} --resource-group ${resourceGroup} --default-action Deny >> deploySynapse.log 2>&1
-    az synapse workspace firewall-rule delete --name AllowAll --resource-group ${resourceGroup} --workspace-name ${synapseAnalyticsWorkspaceName} --yes >> deploySynapse.log 2>&1
-    az synapse workspace firewall-rule delete --name AllowAllWindowsAzureIps --resource-group ${resourceGroup} --workspace-name ${synapseAnalyticsWorkspaceName} --yes >> deploySynapse.log 2>&1
+    echo "Restoring firewall rules..." | tee -a configEnvironment.log
+    az storage account update --name ${datalakeName} --resource-group ${resourceGroup} --default-action Deny >> configEnvironment.log 2>&1
+    az synapse workspace firewall-rule delete --name AllowAll --resource-group ${resourceGroup} --workspace-name ${synapseAnalyticsWorkspaceName} --yes >> configEnvironment.log 2>&1
+    az synapse workspace firewall-rule delete --name AllowAllWindowsAzureIps --resource-group ${resourceGroup} --workspace-name ${synapseAnalyticsWorkspaceName} --yes >> configEnvironment.log 2>&1
 fi
 
-echo "Configuration complete!" | tee -a deploySynapse.log
-touch configEnvironment.complete
+###################################################################################################################
+#
+# Create Service Principal & Key Vault
+#     
+###################################################################################################################
+ARM_SUBSCRIPTION_ID=$(az account show --query id --output tsv 2>&1)
+KEY_VAULT="pockv-tpcds-app"
+ARM_SPN_CREDENTIAL="tpcds-spn-secret"
+ARM_SPN_OBJECT="tpcds-spn-object"
+ARM_SPN_CLIENT="tpcds-spn-client"
+ARM_SPN_TENANT="tpcds-spn-tenant"
+
+STORAGE_ACCT="tpcdsacctpoc"
+RESOURCE_GROUP="PoC-Synapse-Analytics"
+LOCATION="eastus"
+
+echo "Creating Service Principal ......"
+
+APP_SPN_NAME="pocapp-tpcds"
+ARM_CLIENT_SECRET=$(az ad sp create-for-rbac --name "$APP_SPN_NAME" --scopes /subscriptions/"$ARM_SUBSCRIPTION_ID" --query password -o tsv)
+
+ARM_TENANT_ID=$(az ad sp list --display-name "$APP_SPN_NAME" --query [].appOwnerTenantId -o tsv)
+ARM_CLIENT_ID=$(az ad sp list --display-name "$APP_SPN_NAME" --query [].appId -o tsv)
+ARM_OBJECT_ID=$(az ad sp list --display-name "$APP_SPN_NAME" --query [].objectId -o tsv)
+       
+echo "Creating Key Vault ......"
+
+if [[ $(az keyvault list --resource-group $RESOURCE_GROUP | jq .[].name | grep -w $KEY_VAULT) != $KEY_VAULT ]]; then
+    az keyvault create --name $KEY_VAULT --resource-group $RESOURCE_GROUP --location $LOCATION
+fi
+
+az keyvault secret set  --name $ARM_SPN_CREDENTIAL --value $ARM_CLIENT_SECRET --vault-name $KEY_VAULT
+az keyvault secret set --name $ARM_SPN_OBJECT --value $ARM_OBJECT_ID --vault-name $KEY_VAULT
+az keyvault secret set --name $ARM_SPN_CLIENT --value $ARM_CLIENT_ID --vault-name $KEY_VAULT
+az keyvault secret set --name $ARM_SPN_TENANT --value $ARM_TENANT_ID --vault-name $KEY_VAULT
+
+###################################################################################################################
+#
+# RBAC Roles Assignment
+#       
+###################################################################################################################
+echo "Assign the Resource Group Contributor Role to SPN"
+az role assignment create --assignee "$ARM_OBJECT_ID" \
+	--role "Contributor" \
+	--scope "/subscriptions/$ARM_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP"
+
+az keyvault set-policy -n $KEY_VAULT --secret-permissions all --application-id $ARM_CLIENT_ID --object-id $ARM_OBJECT_ID 
+
+echo "Configuration complete!" | tee -a configEnvironment.log
