@@ -19,4 +19,4 @@ enable_private_endpoints                 = false                                
 private_endpoint_virtual_network         = ""                                     // Name of the Virtual Network where you want to create the Private Endpoints. (i.e. vnet-data-platform)
 private_endpoint_virtual_network_subnet  = ""                                     // Name of the Subnet within the Virtual Network where you want to create the Private Endpoints. (i.e. private-endpoint-subnet)
 databricks_workspace_name                = "DEPLOY_PREFIX_NAME-pocdatabricks-tpcds"                  // Name of Databricks Workspace
-key_vault_name                           = "DEPLOY_PREFIX_NAME-pockv-tpcds-app"                  // Name of the key vault
+key_vault_name                           = "DEPLOY_PREFIX_NAMEpockvtpcdsapp"                  // Name of the key vault
