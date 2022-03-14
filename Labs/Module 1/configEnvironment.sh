@@ -111,7 +111,7 @@ az synapse linked-service create --only-show-errors -o none --workspace-name ${s
 
 # Create the DS_Synapse_Managed_Identity Dataset. This is primarily used for the Auto Ingestion pipeline.
 cp artifacts/DS_Synapse_Managed_Identity.json.tmpl artifacts/DS_Synapse_Managed_Identity.json 2>&1
-sed -i "s/REPLACE_SERVER_NAME/${REPLACE_SERVER_NAME}/g" artifacts/LDS_Synapse_Managed_Identity.json
+sed -i "s/REPLACE_SERVER_NAME/${REPLACE_SERVER_NAME}/g" artifacts/DS_Synapse_Managed_Identity.json
 sed -i "s/REPLACE_DB_NAME/${REPLACE_DB_NAME}/g" artifacts/DS_Synapse_Managed_Identity.json
 az synapse dataset create --only-show-errors -o none --workspace-name ${synapseAnalyticsWorkspaceName} --name DS_Synapse_Managed_Identity --file @artifacts/DS_Synapse_Managed_Identity.json
 
