@@ -11,23 +11,30 @@
 #
 ##################################################################################################################
 
+#Read the deployment prefix off the command line and check if it's set
+PREFIX=$1
+if [ -z "$PREFIX" ]; then
+    echo "ERROR: Missing required service name prefix parameter." | tee -a serviceProvision.log
+    exit -1;
+fi
+
 # Make sure this configuration script hasn't been executed already
 if [ -f "deploySynapse.complete" ]; then
     echo "ERROR: It appears this configuration has already been completed." | tee -a serviceProvision.log
-    exit 1;
+    exit -1;
 fi
 
 # Try and determine if we're executing from within the Azure Cloud Shell
 if [ ! "${AZUREPS_HOST_ENVIRONMENT}" = "cloud-shell/1.0" ]; then
     echo "ERROR: It doesn't appear like your executing this from the Azure Cloud Shell. Please use the Azure Cloud Shell at https://shell.azure.com" | tee -a serviceProvision.log
-    exit 1;
+    exit -1;
 fi
 
 # Try and get a token to validate that we're logged into Azure CLI
 aadToken=$(az account get-access-token --resource=https://dev.azuresynapse.net --query accessToken --output tsv 2>&1)
 if echo "$aadToken" | grep -q "ERROR"; then
     echo "ERROR: You don't appear to be logged in to Azure CLI. Please login to the Azure CLI using 'az login'" | tee -a serviceProvision.log
-    exit 1;
+    exit -1;
 fi
 
 ##################################################################################################################
@@ -41,6 +48,9 @@ azureUsernameObjectId=$(az ad user show --id $azureUsername --query objectId --o
 
 # Update Terraform Variables
 sed -i "s/REPLACE_SYNAPSE_AZURE_AD_ADMIN_UPN/${azureUsername}/g" Terraform/terraform.tfvars
+
+# Add service name prefix to all service names
+sed -i "s/DEPLOY_PREFIX_NAME/${PREFIX}/g" Terraform/terraform.tfvars
 
 ##################################################################################################################
 # One click Terraform deployment deploying the TPC DS environemnt
