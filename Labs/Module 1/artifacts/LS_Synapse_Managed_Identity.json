@@ -4,11 +4,11 @@
         "parameters": {
             "ServerName": {
                 "type": "string",
-                "defaultValue": ""
+                "defaultValue": "REPLACE_SERVER_NAME"
             },
             "DatabaseName": {
                 "type": "string",
-                "defaultValue": ""
+                "defaultValue": "REPLACE_DB_NAME"
             }
         },
         "annotations": [],
