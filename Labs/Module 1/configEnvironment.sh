@@ -102,9 +102,13 @@ az synapse linked-service create --only-show-errors -o none --workspace-name ${s
 # Create the DS_Synapse_Managed_Identity Dataset. This is primarily used for the Auto Ingestion pipeline.
 az synapse dataset create --only-show-errors -o none --workspace-name ${synapseAnalyticsWorkspaceName} --name DS_Synapse_Managed_Identity --file @artifacts/DS_Synapse_Managed_Identity.json
 
+datalakeContainer1GB='raw\/tpc-ds\/source_files_001GB_parquet'
+datalakeContainer1TB="raw\/tpc-ds\/source_files_001TB_parquet"
+
 # Copy the Auto Ingestion Pipeline template and update the variables
 cp artifacts/Load_TPC_DS.json.tmpl artifacts/Load_TPC_DS.json 2>&1
 sed -i "s/REPLACE_DATALAKE_NAME/${datalakeName}/g" artifacts/Load_TPC_DS.json
+sed -i -r "s/REPLACE_LOCATION/${datalakeContainer1GB}/g" artifacts/Load_TPC_DS.json
 
 # Create the Auto Ingestion Pipeline in the Synapse Analytics Workspace
 az synapse pipeline create --only-show-errors -o none --workspace-name ${synapseAnalyticsWorkspaceName} --name "Load TPCDS" --file @artifacts/Load_TPC_DS.json >> configEnvironment.log 2>&1
