@@ -63,7 +63,7 @@ sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S 
 
 
 ################################################################################################
-# Create the Views over the external data
+# Create the external tables
 ################################################################################################
 cp artifacts/Create_External_Tables.tmpl artifacts/Create_External_Tables.sql
 sed -i -r "s/REPLACE_LOCATION/${datalakeContainer1GB}/g" artifacts/Create_External_Tables.sql
