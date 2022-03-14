@@ -100,10 +100,19 @@ sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S 
 # Create the Schemas
 sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}.sql.azuresynapse.net -d ${synapseAnalyticsSQLPoolName} -I -i artifacts/Create_Table_Schemas.sql
 
+REPLACE_SERVER_NAME="${synapseAnalyticsSQLPoolName}".sql.azuresynapse.net
+REPLACE_DB_NAME="DataWarehouse"
+
 # Create the LS_Synapse_Managed_Identity Linked Service. This is primarily used for the Auto Ingestion pipeline.
+cp artifacts/LS_Synapse_Managed_Identity.json.tmpl artifacts/LS_Synapse_Managed_Identity.json 2>&1
+sed -i "s/REPLACE_SERVER_NAME/${REPLACE_SERVER_NAME}/g" artifacts/LS_Synapse_Managed_Identity.json
+sed -i "s/REPLACE_DB_NAME/${REPLACE_DB_NAME}/g" artifacts/LS_Synapse_Managed_Identity.json
 az synapse linked-service create --only-show-errors -o none --workspace-name ${synapseAnalyticsWorkspaceName} --name LS_Synapse_Managed_Identity --file @artifacts/LS_Synapse_Managed_Identity.json
 
 # Create the DS_Synapse_Managed_Identity Dataset. This is primarily used for the Auto Ingestion pipeline.
+cp artifacts/DS_Synapse_Managed_Identity.json.tmpl artifacts/DS_Synapse_Managed_Identity.json 2>&1
+sed -i "s/REPLACE_SERVER_NAME/${REPLACE_SERVER_NAME}/g" artifacts/LDS_Synapse_Managed_Identity.json
+sed -i "s/REPLACE_DB_NAME/${REPLACE_DB_NAME}/g" artifacts/DS_Synapse_Managed_Identity.json
 az synapse dataset create --only-show-errors -o none --workspace-name ${synapseAnalyticsWorkspaceName} --name DS_Synapse_Managed_Identity --file @artifacts/DS_Synapse_Managed_Identity.json
 
 datalakeContainer1GB='raw\/tpc-ds\/source_files_001GB_parquet'
