@@ -76,7 +76,7 @@ output "synapse_sql_administrator_login_password" {
 }
 
 output "synapse_analytics_workspace_name" {
-  value = "pocsynapseanalytics-tpcds"
+  value = var.synapse_workspace_name
 }
 
 output "synapse_analytics_workspace_resource_group" {
@@ -84,7 +84,7 @@ output "synapse_analytics_workspace_resource_group" {
 }
 
 output "datalake_name" {
-  value = "tpcdsacctpoc"
+  value = var.adls_storage_account
 }
 
 output "datalake_key" {
