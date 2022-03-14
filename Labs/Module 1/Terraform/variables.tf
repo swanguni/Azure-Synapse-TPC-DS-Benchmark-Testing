@@ -54,3 +54,7 @@ variable "databricks_workspace_name" {
   description = "Name of Databricks Workspace."
 }
 
+variable "key_vault_name" {
+  description = "Name of the Key Vault for the project."
+}
+

@@ -96,6 +96,14 @@ output "private_endpoints_enabled" {
   value = var.enable_private_endpoints
 }
 
+output "key_vault_name" {
+  value = var.key_vault_name
+}
+
+output "region_name" {
+  value = var.azure_region
+}
+
 
 /************************************************************************************************************************************************
 
