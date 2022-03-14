@@ -100,8 +100,8 @@ sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S 
 # Create the Schemas
 sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}.sql.azuresynapse.net -d ${synapseAnalyticsSQLPoolName} -I -i artifacts/Create_Table_Schemas.sql
 
-REPLACE_SERVER_NAME="${synapseAnalyticsSQLPoolName}".sql.azuresynapse.net
-REPLACE_DB_NAME="DataWarehouse"
+REPLACE_SERVER_NAME="${synapseAnalyticsWorkspaceName}".sql.azuresynapse.net
+REPLACE_DB_NAME=${synapseAnalyticsSQLPoolName}
 
 # Create the LS_Synapse_Managed_Identity Linked Service. This is primarily used for the Auto Ingestion pipeline.
 cp artifacts/LS_Synapse_Managed_Identity.json.tmpl artifacts/LS_Synapse_Managed_Identity.json 2>&1
