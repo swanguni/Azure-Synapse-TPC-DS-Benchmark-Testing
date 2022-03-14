@@ -56,16 +56,16 @@ sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S 
 ################################################################################################
 # Create the Data Source and File Format for External Tables
 ################################################################################################
-cp artifacts/Create_Data_Source_and_File_Formats_Externals.sql.tmpl artifacts/Create_Data_Source_and_File_Formats_Externals.sql
-sed -i "s/REPLACE_PASSWORD/${synapseAnalyticsSQLAdminPassword}/g" artifacts/Create_Data_Source_and_File_Formats_Externals.sql
-sed -i -r "s/REPLACE_SAS/${replacedSAS}/g" artifacts/Create_Data_Source_and_File_Formats_Externals.sql
-sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}-ondemand.sql.azuresynapse.net -d "master" -I -i artifacts/Create_Data_Source_and_File_Formats_Externals.sql
+cp artifacts/Create_Data_Source_and_File_Formats_External.sql.tmpl artifacts/Create_Data_Source_and_File_Formats_External.sql
+sed -i "s/REPLACE_PASSWORD/${synapseAnalyticsSQLAdminPassword}/g" artifacts/Create_Data_Source_and_File_Formats_External.sql
+sed -i -r "s/REPLACE_SAS/${replacedSAS}/g" artifacts/Create_Data_Source_and_File_Formats_External.sql
+sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}-ondemand.sql.azuresynapse.net -d "master" -I -i artifacts/Create_Data_Source_and_File_Formats_External.sql
 
 
 ################################################################################################
 # Create the external tables
 ################################################################################################
-cp artifacts/Create_External_Tables.tmpl artifacts/Create_External_Tables.sql
+cp artifacts/Create_External_Tables.sql.tmpl artifacts/Create_External_Tables.sql
 sed -i -r "s/REPLACE_LOCATION/${datalakeContainer1GB}/g" artifacts/Create_External_Tables.sql
 sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}-ondemand.sql.azuresynapse.net -d "master" -I -i artifacts/Create_External_Tables.sql
 
