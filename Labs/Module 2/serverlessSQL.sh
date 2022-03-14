@@ -19,28 +19,53 @@ synapseAnalyticsSQLPoolName="DataWarehouse"
 synapseAnalyticsSQLAdmin="sqladminuser"
 synapseAnalyticsSQLLoadingUser="LoadingUser"
 synapseAnalyticsSQLAdminPassword="Pass@word123"
-datalakeContainer1GB="tpcdsacctpoc/data/source_files_001GB_parquet"
-datalakeContainer1TB="tpcdsacctpoc/data/source_files_001TB_parquet"
+datalakeName="tpcdsacctpoc"
+datalakeContainer1GB='raw\/tpc-ds\/source_files_001GB_parquet'
+datalakeContainer1TB="raw\/tpc-ds\/source_files_001TB_parquet"
 
-echo "Creating the TPCDS Demo Data database using Synapse Serverless SQL..." | tee -a loadSynapse.log
 
-# Generate a SAS for the data lake so we can upload some files
+echo "Generating the TPCDS Demo Data database using Synapse Serverless SQL ..." 
+
+################################################################################################
+#   Generate a SAS for the data lake 
+################################################################################################
 tomorrowsDate=$(date --date="tomorrow" +%Y-%m-%d)
 destinationStorageSAS=$(az storage container generate-sas --account-name ${datalakeName} --name data --permissions rwal --expiry ${tomorrowsDate} --only-show-errors --output tsv)
+echo $destinationStorageSAS
 
-# Update the variables
-cp artifacts/Create_Data_Source_and_File_Formats.sql.tmpl artifacts/Create_Data_Source_and_File_Formats.sql 2>&1
+newSAS="${destinationStorageSAS//&/"\&"}"
+replacedSAS="${newSAS////"\/"}" 
+
+
+################################################################################################
+# Create the Data Source and File Format for Views
+################################################################################################
+cp artifacts/Create_Data_Source_and_File_Formats.sql.tmpl artifacts/Create_Data_Source_and_File_Formats.sql
 sed -i "s/REPLACE_PASSWORD/${synapseAnalyticsSQLAdminPassword}/g" artifacts/Create_Data_Source_and_File_Formats.sql
-sed -i "s/REPLACE_SAS/${destinationStorageSAS}/g" artifacts/Create_Data_Source_and_File_Formats.sql
+sed -i -r "s/REPLACE_SAS/${replacedSAS}/g" artifacts/Create_Data_Source_and_File_Formats.sql
+sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}-ondemand.sql.azuresynapse.net -d "master" -I -i artifacts/Create_Data_Source_and_File_Formats.sql
+
+################################################################################################
+# Create the Views over the external datasource
+################################################################################################
+cp artifacts/Create_Views.sql.tmpl artifacts/Create_Views.sql
+sed -i -r "s/REPLACE_LOCATION/${datalakeContainer1GB}/g" artifacts/Create_Views.sql
+sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}-ondemand.sql.azuresynapse.net -d "master" -I -i artifacts/Create_Views.sql
 
 
-# Create the Data Source and File Format
-sqlcmd -U ${synapseAnalyticsSQLLoadingUser} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}-ondemand.sql.azuresynapse.net -d "TPCDSDemo" -I -i artifacts/Create_Data_Source_and_File_Formats.sql
+################################################################################################
+# Create the Data Source and File Format for External Tables
+################################################################################################
+cp artifacts/Create_Data_Source_and_File_Formats_Externals.sql.tmpl artifacts/Create_Data_Source_and_File_Formats_Externals.sql
+sed -i "s/REPLACE_PASSWORD/${synapseAnalyticsSQLAdminPassword}/g" artifacts/Create_Data_Source_and_File_Formats_Externals.sql
+sed -i -r "s/REPLACE_SAS/${replacedSAS}/g" artifacts/Create_Data_Source_and_File_Formats_Externals.sql
+sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}-ondemand.sql.azuresynapse.net -d "master" -I -i artifacts/Create_Data_Source_and_File_Formats_Externals.sql
 
 
+################################################################################################
 # Create the Views over the external data
-cp artifacts/Create_Views.sql.tmpl artifacts/Create_Views.sql 2>&1
-sed -i "s/REPLACE_LOCATION/${datalakeContainer1GB}/g" artifacts/Create_Views.sql
-sqlcmd -U ${synapseAnalyticsSQLLoadingUser} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}-ondemand.sql.azuresynapse.net -d "TPCDSDemo" -I -i artifacts/Create_Views.sql
+################################################################################################
+cp artifacts/Create_External_Tables.tmpl artifacts/Create_External_Tables.sql
+sed -i -r "s/REPLACE_LOCATION/${datalakeContainer1GB}/g" artifacts/Create_External_Tables.sql
+sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}-ondemand.sql.azuresynapse.net -d "master" -I -i artifacts/Create_External_Tables.sql
 
-echo "Configuration complete!" | tee -a loadSynapse.log
