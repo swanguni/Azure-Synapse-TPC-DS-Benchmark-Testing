@@ -28,6 +28,8 @@ synapseAnalyticsSQLAdmin=$(terraform output -state=Terraform/terraform.tfstate -
 synapseAnalyticsSQLAdminPassword=$(terraform output -state=Terraform/terraform.tfstate -raw synapse_sql_administrator_login_password 2>&1)
 datalakeName=$(terraform output -state=Terraform/terraform.tfstate -raw datalake_name 2>&1)
 privateEndpointsEnabled=$(terraform output -state=Terraform/terraform.tfstate -raw private_endpoints_enabled 2>&1)
+region=$(terraform output -state=Terraform/terraform.tfstate -raw region_name 2>&1)
+keyVaultName=$(terraform output -state=Terraform/terraform.tfstate -raw key_vault_name 2>&1)
 
 echo "Azure Subscription: ${azureSubscriptionName}" 
 echo "Azure Subscription ID: ${azureSubscriptionID}" 
@@ -36,6 +38,8 @@ echo "Synapse Analytics Workspace Resource Group: ${resourceGroup}"
 echo "Synapse Analytics Workspace: ${synapseAnalyticsWorkspaceName}" 
 echo "Synapse Analytics SQL Admin: ${synapseAnalyticsSQLAdmin}" 
 echo "Data Lake Name: ${datalakeName}" 
+echo "Data Lake Name: ${datalakeName}" 
+echo "Key Vault Name: ${datalakeName}" 
 
 ###################################################################################################################
 # 	 
@@ -144,15 +148,15 @@ fi
 #     
 ###################################################################################################################
 ARM_SUBSCRIPTION_ID=$(az account show --query id --output tsv 2>&1)
-KEY_VAULT="pockv-tpcds-app"
+KEY_VAULT=${keyVaultName}
 ARM_SPN_CREDENTIAL="tpcds-spn-secret"
 ARM_SPN_OBJECT="tpcds-spn-object"
 ARM_SPN_CLIENT="tpcds-spn-client"
 ARM_SPN_TENANT="tpcds-spn-tenant"
 
-STORAGE_ACCT="tpcdsacctpoc"
-RESOURCE_GROUP="PoC-Synapse-Analytics"
-LOCATION="eastus"
+STORAGE_ACCT=${datalakeName}
+RESOURCE_GROUP=${resourceGroup}
+LOCATION=${region}
 
 echo "Creating Service Principal ......"
 
