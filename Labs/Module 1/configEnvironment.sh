@@ -38,8 +38,8 @@ echo "Synapse Analytics Workspace Resource Group: ${resourceGroup}"
 echo "Synapse Analytics Workspace: ${synapseAnalyticsWorkspaceName}" 
 echo "Synapse Analytics SQL Admin: ${synapseAnalyticsSQLAdmin}" 
 echo "Data Lake Name: ${datalakeName}" 
-echo "Data Lake Name: ${datalakeName}" 
-echo "Key Vault Name: ${datalakeName}" 
+echo "Region: ${region}" 
+echo "Key Vault Name: ${keyVaultName}" 
 
 ###################################################################################################################
 # 	 
