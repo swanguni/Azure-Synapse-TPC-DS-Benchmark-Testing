@@ -1,0 +1,26 @@
+
+
+USE TPCDSDBExternal
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.symmetric_keys WHERE symmetric_key_id = 101)
+BEGIN
+	CREATE MASTER KEY ENCRYPTION BY PASSWORD = 'REPLACE_PASSWORD';
+END
+GO
+
+CREATE DATABASE SCOPED CREDENTIAL [SasADLSDemoDatabaseScoped]
+WITH IDENTITY = 'SHARED ACCESS SIGNATURE',
+     SECRET = 'REPLACE_SAS'
+GO
+
+CREATE EXTERNAL DATA SOURCE [TPCDataSource] WITH (
+    LOCATION = 'https://tpcdsacctpoc.blob.core.windows.net/data', CREDENTIAL = [SasADLSDemoDatabaseScoped]
+);
+GO
+
+CREATE EXTERNAL FILE FORMAT [FF_Parquet] WITH (
+    FORMAT_TYPE = PARQUET,
+    DATA_COMPRESSION = 'org.apache.hadoop.io.compress.SnappyCodec'
+);
+GO
