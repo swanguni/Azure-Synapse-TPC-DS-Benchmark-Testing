@@ -44,5 +44,7 @@ You can manually configure the Terraform parameters and update default settings 
 - Proper service and user permissions for Azure Synapse Analytics Workspace and Azure Data Lake Storage Gen2
 - SQL Pool TPC DS Parquet Datasets Auto Ingestion pipeline to optimize data ingestion using best practices
 - SQL Pool & SQL Serverless Demo Databses 
+- App Service Principal
+- Key Vault 
 
 
