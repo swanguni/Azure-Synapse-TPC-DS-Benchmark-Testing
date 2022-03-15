@@ -209,3 +209,9 @@ az synapse role assignment create --workspace-name $synapseAnalyticsWorkspaceNam
 az keyvault set-policy -n $KEY_VAULT --secret-permissions all --application-id $ARM_CLIENT_ID --object-id $ARM_OBJECT_ID 
 
 echo "Configuration complete!" | tee -a configEnvironment.log
+
+#Copy configuration state to Module 2 directory
+echo "Copying state file to next module directory..." | tee -a configEnvironment.log
+mkdir  "../Module 2/Terraform"
+cp -rf ./Terraform/terraform.tfstate "../Module 2/Terraform"
+echo "Done!" | tee -a configEnvironment.log
