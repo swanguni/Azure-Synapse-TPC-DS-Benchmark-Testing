@@ -202,7 +202,10 @@ az role assignment create --assignee "$ARM_OBJECT_ID" \
 	--role "Storage Blob Data Contributor" \
 	--scope "/subscriptions/$ARM_SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Storage/storageAccounts/$STORAGE_ACCT"
 
-
+echo "Assign the Azure Synapse Administrator Role to SPN"
+az synapse role assignment create --workspace-name $synapseAnalyticsWorkspaceName \
+	--role "Synapse Administrator" --assignee "$ARM_OBJECT_ID"
+	
 az keyvault set-policy -n $KEY_VAULT --secret-permissions all --application-id $ARM_CLIENT_ID --object-id $ARM_OBJECT_ID 
 
 echo "Configuration complete!" | tee -a configEnvironment.log
