@@ -124,7 +124,7 @@ sed -i "s/REPLACE_DATALAKE_NAME/${datalakeName}/g" artifacts/Load_TPC_DS.json
 sed -i -r "s/REPLACE_LOCATION/${datalakeContainer1GB}/g" artifacts/Load_TPC_DS.json
 
 # Create the Auto Ingestion Pipeline in the Synapse Analytics Workspace
-az synapse pipeline create --only-show-errors -o none --workspace-name ${synapseAnalyticsWorkspaceName} --name "Load TPCDS" --file @artifacts/Load_TPC_DS.json >> configEnvironment.log 2>&1
+az synapse pipeline create --only-show-errors -o none --workspace-name ${synapseAnalyticsWorkspaceName} --name "LoadTPCDS" --file @artifacts/Load_TPC_DS.json >> configEnvironment.log 2>&1
 
 ###################################################################################################################
 # 	 
