@@ -10,7 +10,8 @@ export AZURE_DATABRICKS_APP_ID="2ff814a6-3304-4ab8-85cb-cd0e6f879c1d"
 ######################################################################################
 # Key Vault Secret Info
 ######################################################################################
-KEY_VAULT="pockv-tpcds-app"
+#KEY_VAULT="pockv-tpcds-app"
+KEY_VAULT=$(terraform output -state=Terraform/terraform.tfstate -raw key_vault_name 2>&1)
 ARM_SPN_CREDENTIAL="tpcds-spn-secret"
 ARM_SPN_OBJECT="tpcds-spn-object"
 ARM_SPN_CLIENT="tpcds-spn-client"
@@ -19,16 +20,20 @@ ARM_SPN_TENANT="tpcds-spn-tenant"
 ######################################################################################
 # Storage Account Info
 ######################################################################################
-STORAGE_ACCT="tpcdsacctpoc"
+STORAGE_ACCT=$(terraform output -state=Terraform/terraform.tfstate -raw datalake_name 2>&1)
+#STORAGE_ACCT="tpcdsacctpoc"
 FILE_SYSTEM_NAME="data"
 
 ######################################################################################
 # Databricks Configuration
 ######################################################################################
 MANAGEMENT_RESOURCE_ENDPOINT="https://management.core.windows.net/" 
-RESOURCE_GROUP="PoC-Synapse-Analytics"
-LOCATION="eastus"
-DATABRICKS_WORKSPACE="pocdatabricks-tpcds"
+#RESOURCE_GROUP="PoC-Synapse-Analytics"
+RESOURCE_GROUP=$(terraform output -state=Terraform/terraform.tfstate -raw synapse_analytics_workspace_resource_group 2>&1)
+#LOCATION="eastus"
+LOCATION=$(terraform output -state=Terraform/terraform.tfstate -raw region_name 2>&1)
+DATABRICKS_WORKSPACE=$(terraform output -state=Terraform/terraform.tfstate -raw databricks_workspace_name 2>&1)
+#DATABRICKS_WORKSPACE="pocdatabricks-tpcds"
 DATABRICKS_CLUSTER_NAME="tpc-ds-cluster"
 DATABRICKS_SPARK_VERSION="9.1.x-scala2.12"
 DATABRICKS_NODE_TYPE="Standard_D3_v2"
