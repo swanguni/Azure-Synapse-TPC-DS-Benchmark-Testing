@@ -104,6 +104,10 @@ output "region_name" {
   value = var.azure_region
 }
 
+output "databricks_workspace_name" {
+  value = var.databricks_workspace_name
+}
+
 
 /************************************************************************************************************************************************
 
