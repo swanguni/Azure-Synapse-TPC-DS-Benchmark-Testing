@@ -8,7 +8,9 @@ export ARM_SUBSCRIPTION_ID=$(az account show --query id --output tsv 2>&1)
 ######################################################################################
 # Key Vault Secret Info
 ######################################################################################
-KEY_VAULT="sw-pockv-tpcds-app"
+#KEY_VAULT="sw-pockv-tpcds-app"
+KEY_VAULT=$(terraform output -state=Terraform/terraform.tfstate -raw key_vault_name 2>&1)
+echo "Using Key Vault: ${KEY_VAULT}"
 ARM_SPN_CREDENTIAL="tpcds-spn-secret"
 ARM_SPN_OBJECT="tpcds-spn-object"
 ARM_SPN_CLIENT="tpcds-spn-client"
@@ -18,8 +20,9 @@ ARM_SPN_TENANT="tpcds-spn-tenant"
 # Synapse Configuration
 ######################################################################################
 SYNAPSE_RESOURCE="https://dev.azuresynapse.net/"
-SYNAPSE_WORKSPACE="pocsynapseanalytics-tpcds"
-SYNAPSE_END_POINT="pocsynapseanalytics-tpcds.dev.azuresynapse.net"
+#SYNAPSE_WORKSPACE="pocsynapseanalytics-tpcds"
+SYNAPSE_WORKSPACE=$(terraform output -state=Terraform/terraform.tfstate -raw synapse_analytics_workspace_name 2>&1)
+SYNAPSE_END_POINT="${SYNAPSE_WORKSPACE}.dev.azuresynapse.net"
 SYNAPSE_SQL_POOL="DataWarehouse"
 SYNAPSE_PIPELINE_NAME="LoadTPCDS"
 
