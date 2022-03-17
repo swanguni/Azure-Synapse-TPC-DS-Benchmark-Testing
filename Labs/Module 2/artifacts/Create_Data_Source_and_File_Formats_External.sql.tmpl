@@ -15,7 +15,7 @@ WITH IDENTITY = 'SHARED ACCESS SIGNATURE',
 GO
 
 CREATE EXTERNAL DATA SOURCE [TPCDataSource] WITH (
-    LOCATION = 'https://tpcdsacctpoc.blob.core.windows.net/data', CREDENTIAL = [SasADLSDemoDatabaseScoped]
+    LOCATION = 'https://REPLACE_STORAGE.blob.core.windows.net/data', CREDENTIAL = [SasADLSDemoDatabaseScoped]
 );
 GO
 
