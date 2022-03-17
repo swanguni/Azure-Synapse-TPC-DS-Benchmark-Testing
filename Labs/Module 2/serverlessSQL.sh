@@ -13,13 +13,16 @@ azureSubscriptionID=$(az account show --query id --output tsv 2>&1)
 azureUsername=$(az account show --query user.name --output tsv 2>&1)
 azureUsernameObjectId=$(az ad user show --id $azureUsername --query objectId --output tsv 2>&1)
 
-resourceGroup="PoC-Synapse-Analytics"
-synapseAnalyticsWorkspaceName="pocsynapseanalytics-tpcds"
+#resourceGroup="PoC-Synapse-Analytics"
+resourceGroup=$(terraform output -state=Terraform/terraform.tfstate -raw synapse_analytics_workspace_resource_group 2>&1)
+#synapseAnalyticsWorkspaceName="pocsynapseanalytics-tpcds"
+synapseAnalyticsWorkspaceName=$(terraform output -state=Terraform/terraform.tfstate -raw synapse_analytics_workspace_name 2>&1)
 synapseAnalyticsSQLPoolName="DataWarehouse"  
 synapseAnalyticsSQLAdmin="sqladminuser"
 synapseAnalyticsSQLLoadingUser="LoadingUser"
 synapseAnalyticsSQLAdminPassword="Pass@word123"
-datalakeName="tpcdsacctpoc"
+datalakeName=$(terraform output -state=Terraform/terraform.tfstate -raw datalake_name 2>&1)
+#datalakeName="tpcdsacctpoc"
 datalakeContainer1GB='raw\/tpc-ds\/source_files_001GB_parquet'
 datalakeContainer1TB="raw\/tpc-ds\/source_files_001TB_parquet"
 
