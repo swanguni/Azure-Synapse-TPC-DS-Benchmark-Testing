@@ -61,6 +61,7 @@ sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S 
 ################################################################################################
 cp artifacts/Create_Data_Source_and_File_Formats_External.sql.tmpl artifacts/Create_Data_Source_and_File_Formats_External.sql
 sed -i "s/REPLACE_PASSWORD/${synapseAnalyticsSQLAdminPassword}/g" artifacts/Create_Data_Source_and_File_Formats_External.sql
+sed -i -r "s/REPLACE_STORAGE/${datalakeName}/g" artifacts/Create_Data_Source_and_File_Formats_External.sql
 sed -i -r "s/REPLACE_SAS/${replacedSAS}/g" artifacts/Create_Data_Source_and_File_Formats_External.sql
 sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}-ondemand.sql.azuresynapse.net -d "master" -I -i artifacts/Create_Data_Source_and_File_Formats_External.sql
 
