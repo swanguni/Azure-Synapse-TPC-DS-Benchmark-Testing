@@ -37,7 +37,7 @@ ARM_CLIENT_ID=$(az keyvault secret show --name $ARM_SPN_CLIENT --vault-name $KEY
 ARM_TENANT_ID=$(az keyvault secret show --name $ARM_SPN_TENANT --vault-name $KEY_VAULT --query value -o tsv)
 ARM_CLIENT_SECRET=$(az keyvault secret show --name $ARM_SPN_CREDENTIAL --vault-name $KEY_VAULT --query value -o tsv)
 
-set -s  $ARM_SUBSCRIPTION_ID
+az account set -s  $ARM_SUBSCRIPTION_ID
 
 ######################################################################################
 # Get access tokens for Synapse Analytic API

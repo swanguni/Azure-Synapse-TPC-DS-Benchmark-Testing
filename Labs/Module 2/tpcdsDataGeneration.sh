@@ -97,7 +97,7 @@ echo "Workspce URL: $workspaceUrl"
 ######################################################################################
 # Get access tokens for Databricks API 
 ######################################################################################
-token_response=$(az account get-access-token --resource $AZURE_DATABRICKS_APP_ID)
+token_response=$(az account get-access-token --resource $AZURE_DATABRICKS_APP_ID -o json)
 
 token=$(jq .accessToken -r <<< "$token_response")
 echo "API Token: $token"

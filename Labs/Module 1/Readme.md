@@ -2,10 +2,13 @@
 ### "Single Click Easy" Deployment
 The following commands should be executed from the Azure Cloud Shell at https://shell.azure.com using bash:
 ```
+@Azure:~$ az account set --subscription "YourSubscriptionName"
 @Azure:~$ git clone https://github.com/swanguni/Azure-Synapse-TPC-DS-Benchmark-Testing.git
 @Azure:~$ cd "Azure-Synapse-TPC-DS-Benchmark-Testing/Labs/Module 1"
 @Azure:~$ bash provisionServices.sh <serviceNamePrefix>
 ```
+
+Provisioning can take about 20 minutes. Make sure you select good unique serviceNamePrefix, otherwise you can face global names collisions.
 
 ### Advanced Step by Step Deployment: Terraform
 You can manually configure the Terraform parameters and update default settings such as the Azure region, database name, credentials, and private endpoint integration. The following commands should be executed from the Azure Cloud Shell at https://shell.azure.com using bash:
@@ -33,18 +36,16 @@ You can manually configure the Terraform parameters and update default settings 
 
 # Step 2
 ```
-@Azure:~$ git clone https://github.com/swanguni/Azure-Synapse-TPC-DS-Benchmark-Testing.git
-@Azure:~$ cd "Azure-Synapse-TPC-DS-Benchmark-Testing/Labs/Module 1"
-@Azure:~$ bash configEnvironment.sh 
+@Azure:~$ bash configEnvironment.sh
 ```
+
+Configuration script can take about 5 minutes.
 
 # What's Configured
 - Create a pipeline to auto pause/resume the Dedicated SQL Pool
 - Feature flag to enable/disable Private Endpoints
 - Proper service and user permissions for Azure Synapse Analytics Workspace and Azure Data Lake Storage Gen2
 - SQL Pool TPC DS Parquet Datasets Auto Ingestion pipeline to optimize data ingestion using best practices
-- SQL Pool & SQL Serverless Demo Databses 
+- SQL Pool & SQL Serverless Demo Databses
 - App Service Principal
-- Key Vault 
-
-
+- Key Vault
