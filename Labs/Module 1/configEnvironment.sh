@@ -30,6 +30,7 @@ datalakeName=$(terraform output -state=Terraform/terraform.tfstate -raw datalake
 privateEndpointsEnabled=$(terraform output -state=Terraform/terraform.tfstate -raw private_endpoints_enabled 2>&1)
 region=$(terraform output -state=Terraform/terraform.tfstate -raw region_name 2>&1)
 keyVaultName=$(terraform output -state=Terraform/terraform.tfstate -raw key_vault_name 2>&1)
+APP_SPN_NAME=$(terraform output -state=Terraform/terraform.tfstate -raw sp_name 2>&1)
 
 echo "Azure Subscription: ${azureSubscriptionName}" 
 echo "Azure Subscription ID: ${azureSubscriptionID}" 
@@ -40,6 +41,7 @@ echo "Synapse Analytics SQL Admin: ${synapseAnalyticsSQLAdmin}"
 echo "Data Lake Name: ${datalakeName}" 
 echo "Region: ${region}" 
 echo "Key Vault Name: ${keyVaultName}" 
+echo "Service Principal Name: ${APP_SPN_NAME}" 
 
 ###################################################################################################################
 # 	 
@@ -169,7 +171,6 @@ LOCATION=${region}
 
 echo "Creating Service Principal ......"
 
-APP_SPN_NAME="pocapp-tpcds"
 ARM_CLIENT_SECRET=$(az ad sp create-for-rbac --name "$APP_SPN_NAME" --scopes /subscriptions/"$ARM_SUBSCRIPTION_ID" --query password -o tsv)
 
 ARM_TENANT_ID=$(az ad sp list --display-name "$APP_SPN_NAME" --query [].appOwnerTenantId -o tsv)

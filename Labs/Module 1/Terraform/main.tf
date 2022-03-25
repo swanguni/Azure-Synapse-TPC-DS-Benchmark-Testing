@@ -108,6 +108,10 @@ output "databricks_workspace_name" {
   value = var.databricks_workspace_name
 }
 
+output "sp_name" {
+  value = var.sp_name
+}
+
 
 /************************************************************************************************************************************************
 
