@@ -20,3 +20,4 @@ private_endpoint_virtual_network         = ""                                   
 private_endpoint_virtual_network_subnet  = ""                                     // Name of the Subnet within the Virtual Network where you want to create the Private Endpoints. (i.e. private-endpoint-subnet)
 databricks_workspace_name                = "DEPLOY_PREFIX_NAME-pocdatabricks-tpcds"                  // Name of Databricks Workspace
 key_vault_name                           = "DEPLOY_PREFIX_NAMEpockvtpcdsapp"                  // Name of the key vault
+sp_name                                  = "DEPLOY_PREFIX_NAMEpocapp-tpcds"                  // Name of the key vault

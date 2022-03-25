@@ -61,7 +61,7 @@ libraryJar="spark-sql-perf_2.12-0.5.1-SNAPSHOT.jar"
 # Get Service Principal Info
 ######################################################################################
 echo "Retrieving Service Principal Info ......"
-APP_SPN_NAME="pocapp-tpcds"
+APP_SPN_NAME=$(terraform output -state=Terraform/terraform.tfstate -raw sp_name 2>&1)
 
 ARM_OBJECT_ID=$(az keyvault secret show --name $ARM_SPN_OBJECT --vault-name $KEY_VAULT --query value -o tsv)
 ARM_CLIENT_ID=$(az keyvault secret show --name $ARM_SPN_CLIENT --vault-name $KEY_VAULT --query value -o tsv)

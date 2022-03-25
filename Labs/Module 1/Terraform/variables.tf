@@ -58,3 +58,7 @@ variable "key_vault_name" {
   description = "Name of the Key Vault for the project."
 }
 
+variable "sp_name" {
+  description = "Name of the service principal to use for the project."
+}
+
