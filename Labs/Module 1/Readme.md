@@ -13,7 +13,7 @@ Provisioning can take about 20 minutes. Make sure you select good unique service
 ### Advanced Step by Step Deployment: Terraform
 You can manually configure the Terraform parameters and update default settings such as the Azure region, database name, credentials, and private endpoint integration. The following commands should be executed from the Azure Cloud Shell at https://shell.azure.com using bash:
 ```
-@Azure:~$ git clone https://github.com/shaneochotny/Azure-Synapse-Analytics-PoC
+@Azure:~$ git clone https://github.com/swanguni/Azure-Synapse-TPC-DS-Benchmark-Testing.git
 @Azure:~$ cd "Azure-Synapse-TPC-DS-Benchmark-Testing/Labs/Module 1"
 @Azure:~$ code Terraform/terraform.tfvars
 @Azure:~$ terraform -chdir=Terraform init
