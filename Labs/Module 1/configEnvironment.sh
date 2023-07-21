@@ -171,11 +171,11 @@ LOCATION=${region}
 
 echo "Creating Service Principal ......"
 
-ARM_CLIENT_SECRET=$(az ad sp create-for-rbac --name "$APP_SPN_NAME" --scopes /subscriptions/"$ARM_SUBSCRIPTION_ID" --query password -o tsv)
+ARM_CLIENT_SECRET=$(az ad sp create-for-rbac --name "$APP_SPN_NAME" --role Contributor --scopes /subscriptions/"$ARM_SUBSCRIPTION_ID" --query password -o tsv)
 
-ARM_TENANT_ID=$(az ad sp list --display-name "$APP_SPN_NAME" --query [].appOwnerTenantId -o tsv)
+ARM_TENANT_ID=$(az ad sp list --display-name "$APP_SPN_NAME" --query [].appOwnerOrganizationId -o tsv)
 ARM_CLIENT_ID=$(az ad sp list --display-name "$APP_SPN_NAME" --query [].appId -o tsv)
-ARM_OBJECT_ID=$(az ad sp list --display-name "$APP_SPN_NAME" --query [].objectId -o tsv)
+ARM_OBJECT_ID=$(az ad sp list --display-name "$APP_SPN_NAME" --query [].id -o tsv)
        
 echo "Creating Key Vault ......"
 
