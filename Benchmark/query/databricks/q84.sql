@@ -2,7 +2,8 @@ USE CATALOG o9o9uccatalog;
 --q84.sql--
 
 SELECT /*TOP 100*/ c_customer_id AS customer_id ,
-       coalesce(c_last_name, '') + ', ' + coalesce(c_first_name, '') AS customername
+       --coalesce(c_last_name, '') + ', ' + coalesce(c_first_name, '') AS customername
+       concat(ifnull(c_last_name, '') , ', ' , ifnull(c_first_name, '') ) AS customername
 FROM TPCDS.customer ,
      TPCDS.customer_address ,
      TPCDS.customer_demographics ,

@@ -39,7 +39,6 @@ WHERE (
 		web.return_rank <= 10
 		OR web.currency_rank <= 10
 		)
-LIMIT 100
 
 UNION
 
@@ -127,4 +126,5 @@ WHERE (
 ORDER BY 1
 	,4
 	,5
+LIMIT 100
 -- OPTION (LABEL = 'q49')

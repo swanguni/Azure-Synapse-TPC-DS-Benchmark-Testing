@@ -16,7 +16,7 @@ USE CATALOG o9o9uccatalog;
              w_warehouse_sk,
              i_item_sk,
              d_moy ,
-             STDEV(inv_quantity_on_hand) stdev,
+             stddev(inv_quantity_on_hand) stdev,
              avg(inv_quantity_on_hand) mean
       FROM TPCDS.inventory,
            TPCDS.item,

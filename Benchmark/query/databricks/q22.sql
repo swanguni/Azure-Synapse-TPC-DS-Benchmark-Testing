@@ -5,7 +5,7 @@ SELECT /*TOP 100*/ i_product_name,
        i_brand,
        i_class,
        i_category,
-       avg(convert(bigint, inv_quantity_on_hand)) qoh
+       avg(cast(inv_quantity_on_hand AS bigint)) qoh
 FROM TPCDS.inventory,
      TPCDS.date_dim,
      TPCDS.item,

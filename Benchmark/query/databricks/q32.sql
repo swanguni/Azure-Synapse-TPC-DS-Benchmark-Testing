@@ -1,7 +1,7 @@
 USE CATALOG o9o9uccatalog;
 --q32.sql--
 
-SELECT /*TOP 100*/ sum(cs_ext_discount_amt) AS [excess discount amount]
+SELECT /*TOP 100*/ sum(cs_ext_discount_amt) AS excess_discount_amount
 FROM TPCDS.catalog_sales,
      TPCDS.item,
      TPCDS.date_dim

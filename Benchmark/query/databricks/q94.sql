@@ -1,9 +1,9 @@
 USE CATALOG o9o9uccatalog;
 --q94.sql--
 
-SELECT /*TOP 100*/ count(DISTINCT ws_order_number) AS [order count] ,
-       sum(ws_ext_ship_cost) AS [total shipping cost] ,
-       sum(ws_net_profit) AS [total net profit]
+SELECT /*TOP 100*/ count(DISTINCT ws_order_number) AS order_count ,
+       sum(ws_ext_ship_cost) AS total_shipping_cost ,
+       sum(ws_net_profit) AS total_net_profit
 FROM TPCDS.web_sales ws1,
      TPCDS.date_dim,
      TPCDS.customer_address,

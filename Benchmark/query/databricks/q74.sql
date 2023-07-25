@@ -4,7 +4,7 @@ USE CATALOG o9o9uccatalog;
   (SELECT c_customer_id customer_id,
           c_first_name customer_first_name,
           c_last_name customer_last_name,
-          d_year AS [Year],
+          d_year AS Year,
           sum(ss_net_paid) year_total,
           's' sale_type
    FROM TPCDS.customer,
@@ -21,7 +21,7 @@ USE CATALOG o9o9uccatalog;
    UNION ALL SELECT c_customer_id customer_id,
                     c_first_name customer_first_name,
                     c_last_name customer_last_name,
-                    d_year AS [Year],
+                    d_year AS Year,
                     sum(ws_net_paid) year_total,
                     'w' sale_type
    FROM TPCDS.customer,
@@ -49,10 +49,10 @@ WHERE t_s_secyear.customer_id = t_s_firstyear.customer_id
   AND t_w_firstyear.sale_type = 'w'
   AND t_s_secyear.sale_type = 's'
   AND t_w_secyear.sale_type = 'w'
-  AND t_s_firstyear.[Year] = 2001
-  AND t_s_secyear.[Year] = 2001+1
-  AND t_w_firstyear.[Year] = 2001
-  AND t_w_secyear.[Year] = 2001+1
+  AND t_s_firstyear.Year = 2001
+  AND t_s_secyear.Year = 2001+1
+  AND t_w_firstyear.Year = 2001
+  AND t_w_secyear.Year = 2001+1
   AND t_s_firstyear.year_total > 0
   AND t_w_firstyear.year_total > 0
   AND CASE
