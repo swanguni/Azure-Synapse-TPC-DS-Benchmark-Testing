@@ -1,5 +1,7 @@
 #! /usr/bin/bash
 
+SCALE_FACTOR=$1
+
 ######################################################################################
 # Get Environment Details
 ######################################################################################
@@ -73,7 +75,7 @@ ARM_CLIENT_SECRET=$(az keyvault secret show --name $ARM_SPN_CREDENTIAL --vault-n
 ######################################################################################
 fileFormat="parquet" 
 mountPoint="data"
-scaleFactor=1
+scaleFactor=$SCALE_FACTOR
 
 ######################################################################################
 # Login using Databricks App Service Principal

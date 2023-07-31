@@ -23,9 +23,7 @@ synapseAnalyticsSQLLoadingUser="LoadingUser"
 synapseAnalyticsSQLAdminPassword="Pass@word123"
 datalakeName=$(terraform output -state=Terraform/terraform.tfstate -raw datalake_name 2>&1)
 #datalakeName="tpcdsacctpoc"
-datalakeContainer1GB='raw\/tpc-ds\/source_files_001GB_parquet'
-datalakeContainer1TB="raw\/tpc-ds\/source_files_001TB_parquet"
-
+datalakeContainer='raw\/tpc-ds\/source_files_001GB_parquet'
 
 echo "Generating the TPCDS Demo Data database using Synapse Serverless SQL ..." 
 
@@ -53,7 +51,7 @@ sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S 
 # Create the Views over the external datasource
 ################################################################################################
 cp artifacts/Create_Views.sql.tmpl artifacts/Create_Views.sql
-sed -i -r "s/REPLACE_LOCATION/${datalakeContainer1GB}/g" artifacts/Create_Views.sql
+sed -i -r "s/REPLACE_LOCATION/${datalakeContainer}/g" artifacts/Create_Views.sql
 sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}-ondemand.sql.azuresynapse.net -d "master" -I -i artifacts/Create_Views.sql
 
 
@@ -71,6 +69,6 @@ sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S 
 # Create the external tables
 ################################################################################################
 cp artifacts/Create_External_Tables.sql.tmpl artifacts/Create_External_Tables.sql
-sed -i -r "s/REPLACE_LOCATION/${datalakeContainer1GB}/g" artifacts/Create_External_Tables.sql
+sed -i -r "s/REPLACE_LOCATION/${datalakeContainer}/g" artifacts/Create_External_Tables.sql
 sqlcmd -U ${synapseAnalyticsSQLAdmin} -P ${synapseAnalyticsSQLAdminPassword} -S tcp:${synapseAnalyticsWorkspaceName}-ondemand.sql.azuresynapse.net -d "master" -I -i artifacts/Create_External_Tables.sql
 

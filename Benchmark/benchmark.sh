@@ -27,21 +27,30 @@ echo -e $HEADER > $LOG_PATH
 <<COMMENT_OUT
 COMMENT_OUT
 
-# Synapse Serverless
-for file in $WH_SQL_DIR/*.sql; do
-  filename=$(basename "$file")
-  for ((i=1; i<=$SAMPLING; i++)); do
-    echo -n "Synapse Serverless - $filename,$i," >> $LOG_PATH
-    (time sqlcmd -S tcpds-pocsynapseanalytics-tpcds-ondemand.sql.azuresynapse.net -d TPCDSDBExternal -G -U $1 -P $2 -I -i $file ) 2>> $LOG_PATH 1>/dev/null
-  done
-done
-
 # Synapse DataWarehouse
 for file in $WH_SQL_DIR/*.sql; do
   filename=$(basename "$file")
   for ((i=1; i<=$SAMPLING; i++)); do
     echo -n "Synapse DataWarehouse - $filename,$i," >> $LOG_PATH
-    (time sqlcmd -S tcpds-pocsynapseanalytics-tpcds.sql.azuresynapse.net -d DataWarehouse -G -U $1 -P $2 -I -i $file ) 2>> $LOG_PATH 1>/dev/null
+    (time sqlcmd -S tcpds-pocsynapseanalytics-tpcds.sql.azuresynapse.net -d DataWarehouse -G -U $USR -P $PASS -I -i $file ) 2>> $LOG_PATH 1>/dev/null
+  done
+done
+
+# Databricks SQL
+for file in $DB_SQL_DIR/*.sql; do
+  filename=$(basename "$file")
+  for ((i=1; i<=$SAMPLING; i++)); do
+    echo -n "Databricks SQL - $filename,$i," >> $LOG_PATH
+    (time dbsqlcli -e $file) 2>> $LOG_PATH 1>/dev/null
+  done
+done
+
+# Synapse Serverless
+for file in $WH_SQL_DIR/*.sql; do
+  filename=$(basename "$file")
+  for ((i=1; i<=$SAMPLING; i++)); do
+    echo -n "Synapse Serverless - $filename,$i," >> $LOG_PATH
+    (time sqlcmd -S tcpds-pocsynapseanalytics-tpcds-ondemand.sql.azuresynapse.net -d TPCDSDBExternal -G -U $USR -P $PASS -I -i $file ) 2>> $LOG_PATH 1>/dev/null
   done
 done
 
@@ -50,7 +59,7 @@ for file in $WH_SQL_DIR/*.sql; do
   filename=$(basename "$file")
   for ((i=1; i<=$SAMPLING; i++)); do
     echo -n "Fabric Warehouse - $filename,$i," >> $LOG_PATH
-    (time sqlcmd -S 3mgi7ixzb7ke5dlbvcbi56iwby-kci3w4gnlgeupl4bwwbvobf3zi.datawarehouse.pbidedicated.windows.net -d tpcds_warehouse -G -U $1 -P $2 -I -i $file ) 2>> $LOG_PATH 1>/dev/null
+    (time sqlcmd -S 3mgi7ixzb7ke5dlbvcbi56iwby-kci3w4gnlgeupl4bwwbvobf3zi.datawarehouse.pbidedicated.windows.net -d tpcds_warehouse -G -U $USR -P $PASS -I -i $file ) 2>> $LOG_PATH 1>/dev/null
   done
 done
 
@@ -59,16 +68,6 @@ for file in $LH_SQL_DIR/*.sql; do
   filename=$(basename "$file")
   for ((i=1; i<=$SAMPLING; i++)); do
     echo -n "Fabric Lakehouse - $filename,$i," >> $LOG_PATH
-    (time sqlcmd -S 3mgi7ixzb7ke5dlbvcbi56iwby-kci3w4gnlgeupl4bwwbvobf3zi.datawarehouse.pbidedicated.windows.net -d tpcds_lakehouse -G -U $1 -P $2 -I -i $file ) 2>> $LOG_PATH 1>/dev/null
-  done
-done
-
-
-# Databricks SQL
-for file in $DB_SQL_DIR/*.sql; do
-  filename=$(basename "$file")
-  for ((i=1; i<=$SAMPLING; i++)); do
-    echo -n "Databricks SQL - $filename,$i," >> $LOG_PATH
-    (time dbsqlcli -e $file) 2>> $LOG_PATH 1>/dev/null
+    (time sqlcmd -S 3mgi7ixzb7ke5dlbvcbi56iwby-kci3w4gnlgeupl4bwwbvobf3zi.datawarehouse.pbidedicated.windows.net -d tpcds_lakehouse -G -U $USR -P $PASS -I -i $file ) 2>> $LOG_PATH 1>/dev/null
   done
 done
