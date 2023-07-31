@@ -41,7 +41,7 @@ SELECT c_last_name,
        s_store_name,
        sum(netpaid) paid
 FROM ssales
-WHERE i_color = 'pale'
+WHERE trim(i_color) = 'pale'
 GROUP BY c_last_name,
          c_first_name,
          s_store_name

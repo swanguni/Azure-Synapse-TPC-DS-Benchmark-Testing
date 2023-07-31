@@ -10,7 +10,7 @@ SELECT TOP 100 i_item_id,
        avg(cast(cs_sales_price AS decimal(12, 2))) agg4,
        avg(cast(cs_net_profit AS decimal(12, 2))) agg5,
        avg(cast(c_birth_year AS decimal(12, 2))) agg6,
-       avg(casdbo.cd_dep_count AS decimal(12, 2))) agg7
+       avg(cast(cd1.cd_dep_count AS decimal(12, 2))) agg7
 FROM dbo.catalog_sales,
      dbo.customer_demographics cd1,
      dbo.customer_demographics cd2,

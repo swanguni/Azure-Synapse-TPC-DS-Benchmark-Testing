@@ -10,7 +10,7 @@ USE CATALOG o9o9uccatalog;
    WHERE i_manufact_id IN
        (SELECT i_manufact_id
         FROM TPCDS.item
-        WHERE i_category IN ('Electronics'))
+        WHERE trim(i_category) IN ('Electronics'))
      AND ss_item_sk = i_item_sk
      AND ss_sold_date_sk = d_date_sk
      AND d_year = 1998
@@ -28,7 +28,7 @@ USE CATALOG o9o9uccatalog;
    WHERE i_manufact_id IN
        (SELECT i_manufact_id
         FROM TPCDS.item
-        WHERE i_category IN ('Electronics'))
+        WHERE trim(i_category) IN ('Electronics'))
      AND cs_item_sk = i_item_sk
      AND cs_sold_date_sk = d_date_sk
      AND d_year = 1998
@@ -46,7 +46,7 @@ USE CATALOG o9o9uccatalog;
    WHERE i_manufact_id IN
        (SELECT i_manufact_id
         FROM TPCDS.item
-        WHERE i_category IN ('Electronics'))
+        WHERE trim(i_category) IN ('Electronics'))
      AND ws_item_sk = i_item_sk
      AND ws_sold_date_sk = d_date_sk
      AND d_year = 1998

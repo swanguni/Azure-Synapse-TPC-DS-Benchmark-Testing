@@ -18,7 +18,7 @@
             d_date
    HAVING count(*) >4),
       max_store_sales AS
-  (SELECT max(csales) dbo.max
+  (SELECT max(csales) tpcds_cmax
    FROM
      (SELECT c_customer_sk,
              sum(ss_quantity*ss_sales_price) csales

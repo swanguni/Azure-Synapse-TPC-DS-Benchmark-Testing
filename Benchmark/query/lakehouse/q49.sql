@@ -57,7 +57,7 @@ FROM (
 			ORDER BY currency_ratio
 			) AS currency_rank
 	FROM (
-		SELECdbo.cs_item_sk AS item
+		SELECT cs.cs_item_sk AS item
 			,(cast(sum(coalesce(cr.cr_return_quantity, 0)) AS DECIMAL(15, 4)) / cast(sum(coalesce(cs.cs_quantity, 0)) AS DECIMAL(15, 4))) AS return_ratio
 			,(cast(sum(coalesce(cr.cr_return_amount, 0)) AS DECIMAL(15, 4)) / cast(sum(coalesce(cs.cs_net_paid, 0)) AS DECIMAL(15, 4))) AS currency_ratio
 		FROM dbo.catalog_sales cs

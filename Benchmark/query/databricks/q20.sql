@@ -12,7 +12,7 @@ FROM TPCDS.catalog_sales,
      TPCDS.item,
      TPCDS.date_dim
 WHERE cs_item_sk = i_item_sk
-  AND i_category IN ('Sports',
+  AND trim(i_category) IN ('Sports',
                      'Books',
                      'Home')
   AND cs_sold_date_sk = d_date_sk

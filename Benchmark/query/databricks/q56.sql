@@ -10,7 +10,7 @@ USE CATALOG o9o9uccatalog;
    WHERE i_item_id IN
        (SELECT i_item_id
         FROM TPCDS.item
-        WHERE i_color IN ('slate',
+        WHERE trim(i_color) IN ('slate',
                           'blanched',
                           'burnished'))
      AND ss_item_sk = i_item_sk
@@ -30,7 +30,7 @@ USE CATALOG o9o9uccatalog;
    WHERE i_item_id IN
        (SELECT i_item_id
         FROM TPCDS.item
-        WHERE i_color IN ('slate',
+        WHERE trim(i_color) IN ('slate',
                           'blanched',
                           'burnished'))
      AND cs_item_sk = i_item_sk
@@ -50,7 +50,7 @@ USE CATALOG o9o9uccatalog;
    WHERE i_item_id IN
        (SELECT i_item_id
         FROM TPCDS.item
-        WHERE i_color IN ('slate',
+        WHERE trim(i_color) IN ('slate',
                           'blanched',
                           'burnished'))
      AND ws_item_sk = i_item_sk

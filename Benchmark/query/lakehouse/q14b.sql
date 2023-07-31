@@ -12,7 +12,7 @@
       WHERE ss_item_sk = iss.i_item_sk
         AND ss_sold_date_sk = d1.d_date_sk
         AND d1.d_year BETWEEN 1999 AND 1999 + 2 INTERSECT
-        SELECdbo.i_brand_id,
+        SELECT ics.i_brand_id,
                ics.i_class_id,
                ics.i_category_id
         FROM dbo.catalog_sales,

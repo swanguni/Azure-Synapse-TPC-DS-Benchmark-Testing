@@ -23,7 +23,8 @@ FROM
           OR dbo.household_demographics.hd_buy_potential = 'unknown')
      AND dbo.household_demographics.hd_vehicle_count > 0
      AND (CASE
-              WHEN dbo.household_demographics.hd_vehicle_count > 0 THEN dbo.household_demographics.hd_dep_coundbo.household_demographics.hd_vehicle_count
+              WHEN dbo.household_demographics.hd_vehicle_count > 0 THEN dbo.household_demographics.hd_dep_count/ dbo.household_demographics.hd_vehicle_count
+              
               ELSE NULL
           END) > 1.2
      AND dbo.date_dim.d_year IN (1999,

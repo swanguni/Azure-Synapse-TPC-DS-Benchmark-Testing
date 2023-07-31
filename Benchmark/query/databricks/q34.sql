@@ -20,8 +20,8 @@ FROM
      AND TPCDS.store_sales.ss_hdemo_sk = TPCDS.household_demographics.hd_demo_sk
      AND (TPCDS.date_dim.d_dom BETWEEN 1 AND 3
           OR TPCDS.date_dim.d_dom BETWEEN 25 AND 28)
-     AND (TPCDS.household_demographics.hd_buy_potential = '>10000'
-          OR TPCDS.household_demographics.hd_buy_potential = 'unknown')
+     AND (trim(TPCDS.household_demographics.hd_buy_potential) = '>10000'
+          OR trim(TPCDS.household_demographics.hd_buy_potential) = 'unknown')
      AND TPCDS.household_demographics.hd_vehicle_count > 0
      AND (CASE
               WHEN TPCDS.household_demographics.hd_vehicle_count > 0 THEN TPCDS.household_demographics.hd_dep_count/ TPCDS.household_demographics.hd_vehicle_count
